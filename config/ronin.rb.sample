@@ -1,0 +1,4 @@
+# Sample config file to be placed in /etc/ronin/
+run_list_file '/etc/ronin/modules.yaml'
+log_path      '/var/log/ronin'
+module_path   '/var/lib/ronin/modules'
