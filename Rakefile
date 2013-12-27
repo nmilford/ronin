@@ -16,6 +16,10 @@
 
 require File.dirname(__FILE__) + '/lib/ronin/version'
 
-task :buildrpm do
-  sh("rpmbuild -bb ./rpm/ronin-wrapper.spec")
+task :build_rpm do
+  sh("rpmbuild -bb ./packaging/rpm/ronin-wrapper.spec")
+end
+
+task :build_deb do
+  sh("echo 'not implemented'")
 end
