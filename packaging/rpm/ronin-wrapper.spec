@@ -72,8 +72,8 @@ install -d -m 755 %{buildroot}/%{confdir}
 install -d -m 755 %{buildroot}/%{logdir}
 install -d -m 755 %{buildroot}/%{moduledir}
 
-install    -m 644 %{reporoot}/config/modules.yaml.sample %{buildroot}/%{confdir}/modules.yaml.sample
-install    -m 644 %{reporoot}/config/ronin.rb.sample     %{buildroot}/%{confdir}/ronin.rb.sample
+install    -m 644 %{reporoot}/conf/modules.yaml.sample %{buildroot}/%{confdir}/modules.yaml.sample
+install    -m 644 %{reporoot}/conf/ronin.rb.sample     %{buildroot}/%{confdir}/ronin.rb.sample
 
 %files
 %defattr(-, root, root, -)
