@@ -14,35 +14,28 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 require 'mixlib/config'
+require 'net/https'
+require 'net/http'
+require 'socket'
+require 'json'
 
 module Ronin
-  class Config
-    extend Mixlib::Config
-
-    config_file = '/etc/ronin/ronin.rb'
-
-    if File.exist?(config_file)
-      Ronin::Config.from_file(config_file)
-    else
-      puts "No configuration file at #{config_file}, using defaults."
+  module Etcd
+    def get_run_list
+      # Will add error handling... one day.
+      @hostname = Socket.gethostname
+      @path = "/v2/keys/ronin/run_lists/#{hostname}"
+      @http = Net::HTTP.new(Ronin::Config['etcd_host'], Ronin::Config['etcd_port'])
+      @http.use_ssl = false
+      @request = Net::HTTP::Get.new(@path)
+      @result = http.request(@req)
+      @raw = JSON.parse(result.body)['node']['value']
+      return JSON.parse(@raw)['run_list']
     end
-
-    config_strict_mode         true
-    default :lock_file,        '/var/tmp/ronin.lock'
-    default :log_path,         '/var/log/ronin'
-    default :log_level,        :info
-    default :update_on_change, true
-    default :interpreter,      :puppet
-    default :artifact_path,    '/var/lib/ronin/artifacts'
-
-    default :run_list_type,    :yaml
-
-    default :run_list_file,    '/etc/ronin/artifacts.yaml'
-
-    default :etcd_host,        '127.0.0.1'
-    default :etcd_port,        4001
-
+    module_function :get_run_list
   end
 end
+
+
 
 

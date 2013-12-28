@@ -24,6 +24,7 @@ Gem::Specification.new do |s|
                          "lib/ronin/chef.rb",
                          "lib/ronin/git.rb",
                          "lib/ronin/log.rb",
+                         "lib/ronin/etcd.rb",
                          "lib/ronin/artifact_runner.rb",
                          "lib/ronin/run_list.rb",
                          "lib/ronin/version.rb" ]

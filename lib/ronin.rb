@@ -22,3 +22,5 @@ require 'ronin/puppet'
 require 'ronin/chef'
 require 'ronin/git'
 require 'ronin/log'
+require 'ronin/etcd'
+

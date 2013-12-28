@@ -14,6 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 require 'mixlib/config'
+require 'ronin/etcd'
 require 'yaml'
 
 module Ronin
@@ -22,16 +23,18 @@ module Ronin
 
     def initialize
       @run_list = {}
-      if Ronin::Config['run_list_type'] = :yaml
-         @modules_raw = YAML.load_file(Ronin::Config['run_list_file'])['artifacts']
+      if Ronin::Config[:run_list_type] = :yaml
+         @artifacts_raw = YAML.load_file(Ronin::Config['run_list_file'])['artifacts']
+      elsif Ronin::Config[:run_list_type] = :etcd
+         @artifacts_raw = Ronin::Etcd.get_run_list
       end
 
-      @modules_raw.each do |m|
-        if m.include?(";")
-          @repo   = m.split(";")[0].sub(/(\/)+$/,'')
-          @branch = m.split(";")[1]
+      @artifacts_raw.each do |a|
+        if a.include?(";")
+          @repo   = a.split(";")[0].sub(/(\/)+$/,'')
+          @branch = a.split(";")[1]
         else
-          @repo   = m
+          @repo   = a
           @branch = 'master'
         end
 
@@ -44,9 +47,9 @@ module Ronin
     end
 
     def artifacts
-      @mods = []
-      @run_list.each { |k,v| @mods << k }
-      @mods
+      @arts = []
+      @run_list.each { |k,v| @arts << k }
+      @arts
     end
 
     def items
