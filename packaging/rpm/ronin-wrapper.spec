@@ -37,6 +37,7 @@ Buildroot:     %{_tmppath}/%{name}-%{version}-%{release}-%(%{__id_u} -n)
 Packager:      Nathan Milford <nmilford@shutterstock.com>
 Source0:       http://rubygems.org/gems/%{gemfile}
 Requires:      rubygems
+Requires:      git
 #Requires:      rubygem(yajl-ruby)
 #Requires:      rubygem(mixlib-log)
 #Requires:      rubygem(mixlib-config)

@@ -1,6 +1,6 @@
 # Sample modules file to be placed in /etc/ronin/
 
 # Alternative branches can be specified with a semi-colon
-modules:
+artifacts:
  - https://www.github.com/nmilford/sample
  - https://www.github.com/nmilford/foo;bar_branch

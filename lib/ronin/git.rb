@@ -18,24 +18,24 @@ require 'ronin/config'
 
 module Ronin
   module Git
-    def branch(mod)
-      @cmd = Mixlib::ShellOut.new("git --git-dir=#{Ronin::Config[:module_path]}/#{mod}/.git --work-tree=#{Ronin::Config[:module_path]}/#{mod}/ branch")
+    def branch(artifact)
+      @cmd = Mixlib::ShellOut.new("git --git-dir=#{Ronin::Config[:artifact_path]}/#{artifact}/.git --work-tree=#{Ronin::Config[:artifact_path]}/#{artifact}/ branch")
       @cmd.run_command
       @branch = @cmd.stdout.chomp.split(' ')[1]
       @branch
     end
     module_function :branch
 
-    def pull_and_report_updated(mod)
-      @cmd = Mixlib::ShellOut.new("git --git-dir=#{Ronin::Config[:module_path]}/#{mod}/.git --work-tree=#{Ronin::Config[:module_path]}/#{mod}/ pull")
+    def pull_and_report_updated(artifact)
+      @cmd = Mixlib::ShellOut.new("git --git-dir=#{Ronin::Config[:artifact_path]}/#{artifact}/.git --work-tree=#{Ronin::Config[:artifact_path]}/#{artifact}/ pull")
       @cmd.run_command
       @updated = @cmd.stdout.include?("Updating")
       @updated ? true : false
     end
     module_function :pull_and_report_updated
 
-    def clone(mod_data)
-      @cmd = Mixlib::ShellOut.new("git clone #{mod_data[:repo]} #{Ronin::Config[:module_path]}/#{mod_data[:name]}/ -b #{mod_data[:branch]}")
+    def clone(artifact_data)
+      @cmd = Mixlib::ShellOut.new("git clone #{artifact_data[:repo]} #{Ronin::Config[:artifact_path]}/#{artifact_data[:name]}/ -b #{artifact_data[:branch]}")
       @cmd.run_command
       @cmd.stdout
     end

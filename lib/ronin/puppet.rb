@@ -20,8 +20,8 @@ require 'ronin/log'
 module Ronin
   module Puppet
 
-    @run_list = "#{Ronin::Config[:module_path]}/ronin.pp"
-    @modules = Ronin::RunList.new.modules
+    @run_list = "#{Ronin::Config[:artifact_path]}/ronin.pp"
+    @modules = Ronin::RunList.new.artifacts
 
     def create_run_list
       Ronin::Log.info("Building Puppet run list at #{@run_list}.")
@@ -36,8 +36,8 @@ module Ronin
 
     def run
       self.create_run_list
-      Ronin::Log.info("Running Puppet, logging puppet output to #{Ronin::Config[:log_path]}/ronin-puppet.log.")
-      @cmd = Mixlib::ShellOut.new("puppet apply --verbose --ordering manifest --logdest #{Ronin::Config[:log_path]}/ronin-puppet.log --modulepath #{Ronin::Config[:module_path]} #{@run_list}")
+      Ronin::Log.info("Running Puppet, logging to #{Ronin::Config[:log_path]}/ronin-puppet.log.")
+      @cmd = Mixlib::ShellOut.new("puppet apply --verbose --ordering manifest --logdest #{Ronin::Config[:log_path]}/ronin-puppet.log --modulepath #{Ronin::Config[:artifact_path]} #{@run_list}")
       @cmd.run_command
       self.clean_up
     end

@@ -19,7 +19,7 @@ require 'ronin/log'
 require 'fileutils'
 
 module Ronin
-  class ModuleRunner
+  class ArtifactRunner
     def initialize
       @changes    = false
       @run_list   = Ronin::RunList.new
@@ -29,7 +29,7 @@ module Ronin
       @run_list.items.each do |item|
          @actual_branch = Ronin::Git.branch(item[:name])
 
-        if File.exist?("#{Ronin::Config[:module_path]}/#{item[:name]}")
+        if File.exist?("#{Ronin::Config[:artifact_path]}/#{item[:name]}")
           if item[:branch] != 'master'
             Ronin::Log.info("Module #{item[:name]} is being pulled from the #{item[:branch]} branch and not master.")
           end
@@ -43,12 +43,12 @@ module Ronin
             end
           else
             Ronin::Log.info("Module #{item[:name]} already cached, but is the wrong branch. Deleting cached copy of branch #{@actual_branch}")
-            FileUtils.rm_rf("#{Ronin::Config[:module_path]}/#{item[:name]}/")
+            FileUtils.rm_rf("#{Ronin::Config[:artifact_path]}/#{item[:name]}/")
             Ronin::Git.clone(item[:repo], item[:branch])
             @changes = true if Ronin::Config[:update_on_change]
           end
         else
-          Ronin::Log.info("Module #{item[:name]} not cached, cloning branch #{item[:branch]} of #{item[:repo]} to #{Ronin::Config[:module_path]}.")
+          Ronin::Log.info("Module #{item[:name]} not cached, cloning branch #{item[:branch]} of #{item[:repo]} to #{Ronin::Config[:artifact_path]}.")
           Ronin::Git.clone(item)
           @changes = true if Ronin::Config[:update_on_change]
         end
@@ -57,13 +57,13 @@ module Ronin
     end
 
     def purge_unused
-      @local_modules = Dir.entries(Ronin::Config[:module_path]).select { |dir| File.directory?("#{Ronin::Config[:module_path]}/#{dir}") and !(dir =='.' || dir == '..') }
-      @modules = @run_list.modules
+      @local_artifacts = Dir.entries(Ronin::Config[:artifact_path]).select { |dir| File.directory?("#{Ronin::Config[:artifact_path]}/#{dir}") and !(dir =='.' || dir == '..') }
+      @artifacts = @run_list.artifacts
 
-      @local_modules.each do |mod|
-        unless @modules.include?(mod)
-          Ronin::Log.info("No module named #{mod} in run list, but it exists in #{Ronin::Config[:module_path]}. Purging it.")
-          FileUtils.rm_rf("#{Ronin::Config[:module_path]}/#{mod}/")
+      @local_artifacts.each do |a|
+        unless @martifacts.include?(a)
+          Ronin::Log.info("No module named #{a} in run list, but it exists in #{Ronin::Config[:artifact_path]}. Purging it.")
+          FileUtils.rm_rf("#{Ronin::Config[:artifact_path]}/#{a}/")
         end
       end
     end

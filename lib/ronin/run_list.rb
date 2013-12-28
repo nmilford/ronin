@@ -23,7 +23,7 @@ module Ronin
     def initialize
       @run_list = {}
       if Ronin::Config['run_list_type'] = :yaml
-         @modules_raw = YAML.load_file(Ronin::Config['run_list_file'])['modules']
+         @modules_raw = YAML.load_file(Ronin::Config['run_list_file'])['artifacts']
       end
 
       @modules_raw.each do |m|
@@ -43,7 +43,7 @@ module Ronin
       @run_list
     end
 
-    def modules
+    def artifacts
       @mods = []
       @run_list.each { |k,v| @mods << k }
       @mods

@@ -33,8 +33,8 @@ module Ronin
     default :update_on_change, true
     default :run_list_type,    :yaml
     default :interpreter,      :puppet
-    default :run_list_file,    '/etc/ronin/modules.yaml'
-    default :module_path,      '/var/lib/modules'
+    default :run_list_file,    '/etc/ronin/artifacts.yaml'
+    default :artifact_path,    '/var/lib/ronin/artifacts'
   end
 end
 

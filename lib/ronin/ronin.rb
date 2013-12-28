@@ -14,7 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 $LOAD_PATH << "."
-require 'ronin/module_runner'
+require 'ronin/artifact_runner'
 require 'ronin/run_list'
 require 'ronin/config'
 
@@ -28,7 +28,7 @@ module Ronin
 
     Ronin::Log.level = Ronin::Config[:log_level]
 
-    @r = Ronin::ModuleRunner.new
+    @r = Ronin::ArtifactRunner.new
     @changes = @r.download_and_report_changes
     @r.purge_unused
 
