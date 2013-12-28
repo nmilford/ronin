@@ -27,7 +27,7 @@ module Ronin
       Ronin::Log.info("Building Puppet run list at #{@run_list}.")
       File.open(@run_list, "w") do |f|
         @modules.each do |mod|
-          Ronin::Log.info("Adding module '#{mod}'' to run list.")
+          Ronin::Log.info("Adding module '#{mod}' to run list.")
           f.write "include #{mod}\n"
         end
       end
@@ -37,7 +37,7 @@ module Ronin
     def run
       self.create_run_list
       Ronin::Log.info("Running Puppet, logging puppet output to #{Ronin::Config[:log_path]}/ronin-puppet.log.")
-      @cmd = Mixlib::ShellOut.new("sudo puppet apply --verbose --ordering manifest --logdest #{Ronin::Config[:log_path]}/ronin-puppet.log --modulepath #{Ronin::Config[:module_path]} #{@run_list}")
+      @cmd = Mixlib::ShellOut.new("puppet apply --verbose --ordering manifest --logdest #{Ronin::Config[:log_path]}/ronin-puppet.log --modulepath #{Ronin::Config[:module_path]} #{@run_list}")
       @cmd.run_command
       self.clean_up
     end

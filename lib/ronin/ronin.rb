@@ -21,7 +21,10 @@ require 'ronin/config'
 module Ronin
   def run
 
-    raise 'Must run as root' unless Process.uid == 0
+    unless Process.uid == 0
+      puts 'You need to be root to perform this command.'
+      exit 1
+    end
 
     Ronin::Log.level = Ronin::Config[:log_level]
 
