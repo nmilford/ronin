@@ -44,12 +44,12 @@ module Ronin
           else
             Ronin::Log.info("Module #{item[:name]} already cached, but is the wrong branch. Deleting cached copy of branch #{@actual_branch}")
             FileUtils.rm_rf("#{Ronin::Config[:module_path]}/#{item[:name]}/")
-            Ronin::Git.clone(item[:name], item[:branch])
+            Ronin::Git.clone(item[:repo], item[:branch])
             @changes = true if Ronin::Config[:update_on_change]
           end
         else
           Ronin::Log.info("Module #{item[:name]} not cached, cloning branch #{item[:branch]} of #{item[:repo]} to #{Ronin::Config[:module_path]}.")
-          Ronin::Git.clone(item[:name], item[:branch])
+          Ronin::Git.clone(item)
           @changes = true if Ronin::Config[:update_on_change]
         end
       end

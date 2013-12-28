@@ -34,10 +34,10 @@ module Ronin
     end
     module_function :pull_and_report_updated
 
-    def clone(mod, branch)
-      @cmd = Mixlib::ShellOut.new("git clone #{Ronin::Config[:git_url]}/#{mod}/ #{Ronin::Config[:module_path]}/#{mod}/ -b #{branch}")
+    def clone(mod_data)
+      @cmd = Mixlib::ShellOut.new("git clone #{mod_data[:repo]} #{Ronin::Config[:module_path]}/#{mod_data[:name]}/ -b #{mod_data[:branch]}")
       @cmd.run_command
-      puts @cmd.stdout
+      @cmd.stdout
     end
     module_function :clone
   end

@@ -24,7 +24,7 @@ module Ronin
     if File.exist?(config_file)
       Ronin::Config.from_file(config_file)
     else
-      Ronin::Log.warn("No configuration file at #{config_file}, using defaults.")
+      puts "No configuration file at #{config_file}, using defaults."
     end
 
     config_strict_mode         true
@@ -35,7 +35,6 @@ module Ronin
     default :interpreter,      :puppet
     default :run_list_file,    '/etc/ronin/modules.yaml'
     default :module_path,      '/var/lib/modules'
-    default :git_url,          'https://github.com/puppetlabs'
   end
 end
 
