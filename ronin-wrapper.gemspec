@@ -5,13 +5,12 @@ Gem::Specification.new do |s|
   s.name             = 'ronin-wrapper'
   s.version          = Ronin::VERSION
   s.platform         = Gem::Platform::RUBY
-  s.date             = '2013-12-26'
+  s.date             = '2013-12-27'
   s.summary          = "A framework for masterless configuration management."
   s.description      = "A wrapper to enable masterless configuration management, using Chef and/or Puppet."
   s.authors          = ["Nathan Milford"]
   s.email            = 'nathan@milford.io'
   s.homepage         = 'https://github.com/nmilford/ronin'
-  s.add_dependency     "puppet", ">= 3.0.0"
   s.add_dependency     "yajl-ruby", ">= 1.2.0"
   s.add_dependency     "mixlib-log", ">= 1.6.0"
   s.add_dependency     "mixlib-config", ">= 2.1.0"
