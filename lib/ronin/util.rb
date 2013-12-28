@@ -14,21 +14,17 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-require File.dirname(__FILE__) + '/lib/ronin/util'
+module Ronin
+  module Util
 
-task :build_rpm do
-  if Ronin::Util.find_cmd("rpmbuild").nil?
-    puts "You must have rpmdevtools installed to build an RPM package."
-    exit 1
-  else
+    def find_cmd(cmd)
+      ENV['PATH'].split(File::PATH_SEPARATOR).each do |path|
+        cmd_path = File.join(path, cmd)
+        return cmd_path if File.executable? cmd_path
+      end
+      return nil
+    end
+    module_function :find_cmd
 
-  unless   File.exist?("#{File.expand_path('~')}/rpmbuild")
-    puts "Setting up RPM build tree at ~/rpmbuild."
-    sh("#{Ronin::Util.find_cmd("rpmdev-setuptree")}")
   end
-  sh("#{Ronin::Util.find_cmd("rpmbuild")} -bb ./packaging/rpm/ronin-wrapper.spec")
-end
-
-task :build_deb do
-  puts 'not implemented'
 end
