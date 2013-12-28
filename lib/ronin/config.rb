@@ -34,11 +34,8 @@ module Ronin
     default :update_on_change, true
     default :interpreter,      :puppet
     default :artifact_path,    '/var/lib/ronin/artifacts'
-
     default :run_list_type,    :yaml
-
     default :run_list_file,    '/etc/ronin/artifacts.yaml'
-
     default :etcd_host,        '127.0.0.1'
     default :etcd_port,        4001
 

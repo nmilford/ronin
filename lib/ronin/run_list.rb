@@ -23,9 +23,9 @@ module Ronin
 
     def initialize
       @run_list = {}
-      if Ronin::Config[:run_list_type] = :yaml
+      if Ronin::Config[:run_list_type] == :yaml
          @artifacts_raw = YAML.load_file(Ronin::Config['run_list_file'])['artifacts']
-      elsif Ronin::Config[:run_list_type] = :etcd
+      elsif Ronin::Config[:run_list_type] == :etcd
          @artifacts_raw = Ronin::Etcd.get_run_list
       end
 

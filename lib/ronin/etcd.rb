@@ -19,23 +19,26 @@ require 'net/http'
 require 'socket'
 require 'json'
 
+# Add test data thus.
+#curl -L http://127.0.0.1:4001/v2/keys/ronin/run_lists/localhost.localdomain -X PUT -d value='{
+# "run_list": [
+#   "https://github.com/opscode-cookbooks/motd-tail"
+#  ]
+#}'
+
 module Ronin
   module Etcd
     def get_run_list
       # Will add error handling... one day.
       @hostname = Socket.gethostname
-      @path = "/v2/keys/ronin/run_lists/#{hostname}"
+      @path = "/v2/keys/ronin/run_lists/#{@hostname}"
       @http = Net::HTTP.new(Ronin::Config['etcd_host'], Ronin::Config['etcd_port'])
       @http.use_ssl = false
       @request = Net::HTTP::Get.new(@path)
-      @result = http.request(@req)
-      @raw = JSON.parse(result.body)['node']['value']
+      @result = @http.request(@request)
+      @raw = JSON.parse(@result.body)['node']['value']
       return JSON.parse(@raw)['run_list']
     end
     module_function :get_run_list
   end
 end
-
-
-
-

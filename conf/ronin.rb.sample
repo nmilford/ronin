@@ -1,4 +1,25 @@
 # Sample config file to be placed in /etc/ronin/
-run_list_file '/etc/ronin/artifacts.yaml'
-log_path      '/var/log/ronin'
+log_path '/var/log/ronin'
+
+# Can be :chef or :puppet
+interpreter :puppet
+
+# Where Chef or Puppet artifacts are placed.
 artifact_path '/var/lib/ronin/artifacts'
+
+# If this is true, Ronin will only run the interpreter if git notices changes.
+update_on_change true
+
+# If update_on_change is true, we can enable a daily override to enforce convergence.
+# daily_override
+
+# We can source our run list from a local :yaml file or an :etcd cluster
+run_list_type :yaml
+
+# If using :yaml, then this is the source file.
+run_list_file '/etc/ronin/artifacts.yaml'
+
+# If using :etcd, these are the connection params.  It looks in the path
+# '/v2/keys/ronin/run_lists/<hostname>' for a json list of artifacts to fetch.
+etcd_host '127.0.0.1'
+etcd_port  4001
