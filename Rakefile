@@ -17,16 +17,16 @@
 require File.dirname(__FILE__) + '/lib/ronin/util'
 
 task :build_rpm do
-  if Ronin::Util.find_cmd("rpmbuild").nil?
+  if Ronin::Util.find_cmd("rpmbuild") and Ronin::Util.find_cmd("rpmdev-setuptree")
+    unless File.exist?("#{File.expand_path('~')}/rpmbuild")
+      puts "Setting up RPM build tree at ~/rpmbuild."
+      sh %{#{Ronin::Util.find_cmd("rpmdev-setuptree")}}
+    end
+    sh %{#{Ronin::Util.find_cmd("rpmbuild")} -bb ./packaging/rpm/ronin-wrapper.spec}
+  else
     puts "You must have rpmdevtools installed to build an RPM package."
     exit 1
-  else
-
-  unless   File.exist?("#{File.expand_path('~')}/rpmbuild")
-    puts "Setting up RPM build tree at ~/rpmbuild."
-    sh("#{Ronin::Util.find_cmd("rpmdev-setuptree")}")
   end
-  sh("#{Ronin::Util.find_cmd("rpmbuild")} -bb ./packaging/rpm/ronin-wrapper.spec")
 end
 
 task :build_deb do
