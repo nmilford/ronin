@@ -14,11 +14,12 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-require 'ronin'
 
 unless Process.uid == 0
   puts 'You need to be root to perform this command.'
   exit 1
 end
+
+require 'ronin'
 
 Ronin.run

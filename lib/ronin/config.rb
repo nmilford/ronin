@@ -28,6 +28,7 @@ module Ronin
     end
 
     config_strict_mode         true
+    default :lock_file,        '/var/tmp/ronin.lock'
     default :log_path,         '/var/log/ronin'
     default :log_level,        :info
     default :update_on_change, true

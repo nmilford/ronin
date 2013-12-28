@@ -18,6 +18,7 @@ require 'ronin/artifact_runner'
 require 'ronin/run_list'
 require 'ronin/config'
 require 'ronin/util'
+require 'ronin/log'
 
 module Ronin
   def run
@@ -25,36 +26,42 @@ module Ronin
     Ronin::Log.level = Ronin::Config[:log_level]
 
     if Ronin::Util.find_cmd("git").nil?
-      puts 'You need to have git installed to perform this command.'
-      exit 1
+      abort("You need to have git installed to perform this command.")
     else
       $GIT_BIN = Ronin::Util.find_cmd("git")
     end
 
     if Ronin::Util.find_cmd("puppet").nil? and Ronin::Config[:interpreter] == :puppet
-      puts 'You need to have Puppet installed to perform this command with Puppet set as the interpreter.'
-      exit 1
+      abort("You need to have Puppet installed to perform this command with Puppet set as the interpreter.")
     else
-       $PUPPET_BIN = Ronin::Util.find_cmd("puppet")
+      $PUPPET_BIN = Ronin::Util.find_cmd("puppet")
     end
 
     if Ronin::Util.find_cmd("chef-solo").nil? and Ronin::Config[:interpreter] == :puppet
-      puts 'You need to have Chef-Solo installed to perform this command with Chef set as the interpreter.'
-      exit 1
+      abort("You need to have Chef-Solo installed to perform this command with Chef set as the interpreter.")
     else
-       $CHEFSOLO_BIN = Ronin::Util.find_cmd("puppet")
+      $CHEFSOLO_BIN = Ronin::Util.find_cmd("puppet")
     end
 
-    @r = Ronin::ArtifactRunner.new
-    @changes = @r.download_and_report_changes
-    @r.purge_unused
+    unless File.exists?(Ronin::Config[:lock_file])
+      Ronin::Log.info("Dropping lock file. (#{Ronin::Config[:lock_file]})")
+      File.new(Ronin::Config[:lock_file], "w")
 
-    if @changes
-      if Ronin::Config[:interpreter] == :puppet
-        Ronin::Puppet.run
-      elsif Ronin::Config[:interpreter] == :chef
-        Ronin::Chef.run
+      @r = Ronin::ArtifactRunner.new
+      @changes = @r.download_and_report_changes
+      @r.purge_unused
+
+      if @changes
+        if Ronin::Config[:interpreter] == :puppet
+          Ronin::Puppet.run
+        elsif Ronin::Config[:interpreter] == :chef
+          Ronin::Chef.run
+        end
       end
+      Ronin::Log.info("Deleting lock file and exiting. (#{Ronin::Config[:lock_file]})")
+      File.delete(Ronin::Config[:lock_file])
+    else
+      abort("Lock file (#{Ronin::Config[:lock_file]}) exists! Check to see if this Ronin is already running. Exiting.")
     end
   end
   module_function :run
