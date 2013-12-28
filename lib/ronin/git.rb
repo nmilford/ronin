@@ -19,7 +19,7 @@ require 'ronin/config'
 module Ronin
   module Git
     def branch(artifact)
-      @cmd = Mixlib::ShellOut.new("git --git-dir=#{Ronin::Config[:artifact_path]}/#{artifact}/.git --work-tree=#{Ronin::Config[:artifact_path]}/#{artifact}/ branch")
+      @cmd = Mixlib::ShellOut.new("#{$GIT_BIN} --git-dir=#{Ronin::Config[:artifact_path]}/#{artifact}/.git --work-tree=#{Ronin::Config[:artifact_path]}/#{artifact}/ branch")
       @cmd.run_command
       @branch = @cmd.stdout.chomp.split(' ')[1]
       @branch

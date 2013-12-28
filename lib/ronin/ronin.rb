@@ -17,13 +17,33 @@ $LOAD_PATH << "."
 require 'ronin/artifact_runner'
 require 'ronin/run_list'
 require 'ronin/config'
+require 'ronin/util'
 
 module Ronin
   def run
 
     Ronin::Log.level = Ronin::Config[:log_level]
 
-    puts Ronin::Config[:interpreter].inspect
+    if Ronin::Util.find_cmd("git").nil?
+      puts 'You need to have git installed to perform this command.'
+      exit 1
+    else
+      $GIT_BIN = Ronin::Util.find_cmd("git")
+    end
+
+    if Ronin::Util.find_cmd("puppet").nil? and Ronin::Config[:interpreter] == :puppet
+      puts 'You need to have Puppet installed to perform this command with Puppet set as the interpreter.'
+      exit 1
+    else
+       $PUPPET_BIN = Ronin::Util.find_cmd("puppet")
+    end
+
+    if Ronin::Util.find_cmd("chef-solo").nil? and Ronin::Config[:interpreter] == :puppet
+      puts 'You need to have Chef-Solo installed to perform this command with Chef set as the interpreter.'
+      exit 1
+    else
+       $CHEFSOLO_BIN = Ronin::Util.find_cmd("puppet")
+    end
 
     @r = Ronin::ArtifactRunner.new
     @changes = @r.download_and_report_changes

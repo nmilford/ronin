@@ -5,7 +5,7 @@ Gem::Specification.new do |s|
   s.name             = 'ronin-wrapper'
   s.version          = Ronin::VERSION
   s.platform         = Gem::Platform::RUBY
-  s.date             = '2013-12-27'
+  s.date             = '2013-12-28'
   s.summary          = "A framework for masterless configuration management."
   s.description      = "A wrapper to enable masterless configuration management, using Chef and/or Puppet."
   s.authors          = ["Nathan Milford"]
@@ -18,6 +18,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency "rake", ">= 10.1.1"
   s.files            = [ "lib/ronin.rb",
                          "lib/ronin/ronin.rb",
+                         "lib/ronin/util.rb",
                          "lib/ronin/config.rb",
                          "lib/ronin/puppet.rb",
                          "lib/ronin/chef.rb",

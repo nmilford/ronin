@@ -47,7 +47,7 @@ module Ronin
       self.create_run_list
       self.create_solo_conf
       Ronin::Log.info("Running Chef, logging to #{Ronin::Config[:log_path]}/ronin-chef.log.")
-      @cmd = Mixlib::ShellOut.new("chef-solo --logfile #{Ronin::Config[:log_path]}/ronin-chef.log --config #{@solo_conf} --json-attributes #{@run_list}")
+      @cmd = Mixlib::ShellOut.new("#{$CHEFSOLO_BIN}  --logfile #{Ronin::Config[:log_path]}/ronin-chef.log --config #{@solo_conf} --json-attributes #{@run_list}")
       @cmd.run_command
       self.clean_up
     end
