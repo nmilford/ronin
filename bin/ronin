@@ -16,4 +16,9 @@
 # limitations under the License.
 require 'ronin'
 
+unless Process.uid == 0
+  puts 'You need to be root to perform this command.'
+  exit 1
+end
+
 Ronin.run

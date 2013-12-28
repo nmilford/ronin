@@ -21,21 +21,18 @@ require 'ronin/config'
 module Ronin
   def run
 
-    unless Process.uid == 0
-      puts 'You need to be root to perform this command.'
-      exit 1
-    end
-
     Ronin::Log.level = Ronin::Config[:log_level]
+
+    puts Ronin::Config[:interpreter].inspect
 
     @r = Ronin::ArtifactRunner.new
     @changes = @r.download_and_report_changes
     @r.purge_unused
 
     if @changes
-      if Ronin::Config[:interpreter] = :puppet
+      if Ronin::Config[:interpreter] == :puppet
         Ronin::Puppet.run
-      elsif Ronin::Config[:interpreter] = :chef
+      elsif Ronin::Config[:interpreter] == :chef
         Ronin::Chef.run
       end
     end

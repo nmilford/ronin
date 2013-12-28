@@ -73,7 +73,7 @@ install -d -m 755 %{buildroot}/%{confdir}
 install -d -m 755 %{buildroot}/%{logdir}
 install -d -m 755 %{buildroot}/%{moduledir}
 
-install    -m 644 %{reporoot}/conf/modules.yaml.sample %{buildroot}/%{confdir}/modules.yaml.sample
+install    -m 644 %{reporoot}/conf/artifacts.yaml.sample %{buildroot}/%{confdir}/artifactss.yaml.sample
 install    -m 644 %{reporoot}/conf/ronin.rb.sample     %{buildroot}/%{confdir}/ronin.rb.sample
 
 %files
@@ -88,5 +88,5 @@ install    -m 644 %{reporoot}/conf/ronin.rb.sample     %{buildroot}/%{confdir}/r
 %dir %{moduledir}
 
 %changelog
-* Fri Dec 27 2012 Nathan Milford <nmilford@shutterstock.com>
+* Fri Dec 27 2012 Nathan Milford <nathan@milford.io>
 - Initial package

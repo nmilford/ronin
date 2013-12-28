@@ -61,7 +61,7 @@ module Ronin
       @artifacts = @run_list.artifacts
 
       @local_artifacts.each do |a|
-        unless @martifacts.include?(a)
+        unless @artifacts.include?(a)
           Ronin::Log.info("No module named #{a} in run list, but it exists in #{Ronin::Config[:artifact_path]}. Purging it.")
           FileUtils.rm_rf("#{Ronin::Config[:artifact_path]}/#{a}/")
         end
