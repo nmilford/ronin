@@ -26,5 +26,10 @@ module Ronin
     end
     module_function :find_cmd
 
+    def num_cores
+      `cat /proc/cpuinfo | grep processor | wc -l`.to_i
+    end
+    module_function :num_cores
+
   end
 end

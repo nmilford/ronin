@@ -15,6 +15,7 @@ Gem::Specification.new do |s|
   s.add_dependency     "mixlib-log", ">= 1.6.0"
   s.add_dependency     "mixlib-config", ">= 2.1.0"
   s.add_dependency     "mixlib-shellout", ">= 1.3.0"
+  s.add_dependency     "mixlib-shellout", ">= 0.9.1"
   s.add_development_dependency "rake", ">= 10.1.1"
   s.files            = [ "lib/ronin.rb",
                          "lib/ronin/ronin.rb",

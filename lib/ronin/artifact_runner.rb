@@ -14,9 +14,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.require 'ronin/run_list'
 require 'ronin/config'
+require 'ronin/util'
 require 'ronin/git'
 require 'ronin/log'
 require 'fileutils'
+require 'parallel'
 
 module Ronin
   class ArtifactRunner
@@ -26,7 +28,7 @@ module Ronin
     end
 
     def download_and_report_changes
-      @run_list.items.each do |item|
+      Parallel.each(@run_list.items, :in_processes => Ronin::Util.num_cores).each do |item|
          @actual_branch = Ronin::Git.branch(item[:name])
 
         if File.exist?("#{Ronin::Config[:artifact_path]}/#{item[:name]}")
@@ -44,7 +46,7 @@ module Ronin
           else
             Ronin::Log.info("Module #{item[:name]} already cached, but is the wrong branch. Deleting cached copy of branch #{@actual_branch}")
             FileUtils.rm_rf("#{Ronin::Config[:artifact_path]}/#{item[:name]}/")
-            Ronin::Git.clone(item[:repo], item[:branch])
+            Ronin::Git.clone(item)
             @changes = true if Ronin::Config[:update_on_change]
           end
         else
