@@ -1,25 +1,49 @@
-# Sample config file to be placed in /etc/ronin/
+# Sample config file to be placed in /etc/ronin/ronin.rb
+
+# If set to true, everything below (except etcd_*) will be overridden by
+# values gotten from:
+#   http://etcd_host:etcd_port/v2/keys/ronin/config/common
+# then from:
+#   http://etcd_host:etcd_port/v2/keys/ronin/config/$HOSTNAME
+# then from defaults.
+config_from_etcd true
+
+# etcd connection parameters.
+etcd_host '127.0.0.1'
+etcd_port 4001
+
+# Where ronin.log, ronin-puppet.log and/or ronin-chef.log reside.
 log_path '/var/log/ronin'
 
-# Can be :chef or :puppet
-interpreter :puppet
+# What interpretor to use to configure your system. Can be :chef or :puppet
+interpreter :chef
 
-# Where Chef or Puppet artifacts are placed.
+# Where Chef or Puppet artifacts are placed. (Artifacts are Chef Cookbooks or
+# Puppet Modules).
 artifact_path '/var/lib/ronin/artifacts'
 
-# If this is true, Ronin will only run the interpreter if git notices changes.
+# If this is true, Ronin will only run the interpreter if git picks up changes.
 update_on_change true
 
-# If update_on_change is true, we can enable a daily override to enforce convergence.
+# If update_on_change is true, we can enable a daily override to force Ronin to
+# run the interpretor and enforce convergence.
 # daily_override
 
-# We can source our run list from a local :yaml file or an :etcd cluster
+# We can source our run list from a local :yaml file or an :etcd cluster. If
+# using :etcd, It will source them from:
+#    http://etcd_host:etcd_port/v2/keys/ronin/run_list/common
+# then from:
+#    http://etcd_host:etcd_port/v2/keys/ronin/run_list/$HOSTNAME
 run_list_type :yaml
 
 # If using :yaml, then this is the source file.
 run_list_file '/etc/ronin/artifacts.yaml'
 
-# If using :etcd, these are the connection params.  It looks in the path
-# '/v2/keys/ronin/run_lists/<hostname>' for a json list of artifacts to fetch.
-etcd_host '127.0.0.1'
-etcd_port  4001
+# If using etcd, you can format the run list thus:
+# {
+#   "log_path": "/var/log/ronin",
+#   "interpreter": ":chef",
+#   "artifact_path": "/var/lib/ronin/artifacts",
+#   "update_on_change": "true",
+#   "run_list_type": ":etcd"
+# }'

@@ -2,5 +2,13 @@
 
 # Alternative branches can be specified with a semi-colon
 artifacts:
- - https://www.github.com/nmilford/sample
- - https://www.github.com/nmilford/foo;bar_branch
+ - https://github.com/puppetlabs/puppetlabs-ntp
+ - https://github.com/puppetlabs/puppetlabs-git
+
+# If using etcd, you can format the run list thus:
+# {
+#  "artifacts": [
+#    "https://github.com/opscode-cookbooks/ntp",
+#    "https://github.com/opscode-cookbooks/git"
+#   ]
+# }

@@ -20,25 +20,51 @@ require 'socket'
 require 'json'
 
 # Add test data thus.
-#curl -L http://127.0.0.1:4001/v2/keys/ronin/run_lists/localhost.localdomain -X PUT -d value='{
-# "run_list": [
+
+#curl -L http://127.0.0.1:4001/v2/keys/ronin/config/common -X PUT -d value='{
+# "artifacts": [
 #   "https://github.com/opscode-cookbooks/motd-tail"
 #  ]
 #}'
 
+#curl -L http://127.0.0.1:4001/v2/keys/ronin/config/common -X PUT -d value='{
+#  "log_path": "/var/log/ronin",
+#  "interpreter": ":chef",
+#  "artifact_path": "/var/lib/ronin/artifacts",
+#  "update_on_change": "true",
+#  "run_list_type": ":etcd",
+#  "run_list_file": "/etc/ronin/artifacts.yaml"
+#}'
+
 module Ronin
   module Etcd
-    def get_run_list
+
+    def get_key(type, key)
       # Will add error handling... one day.
-      @hostname = Socket.gethostname
-      @path = "/v2/keys/ronin/run_lists/#{@hostname}"
+      @path = "/v2/keys/ronin/#{type}/#{key}"
       @http = Net::HTTP.new(Ronin::Config['etcd_host'], Ronin::Config['etcd_port'])
       @http.use_ssl = false
       @request = Net::HTTP::Get.new(@path)
       @result = @http.request(@request)
-      @raw = JSON.parse(@result.body)['node']['value']
-      return JSON.parse(@raw)['run_list']
+      return JSON.parse(@result.body)['node']['value']
+    end
+    module_function :get_key
+
+    def get_config
+      @hostname = Socket.gethostname
+      @common   = JSON.parse(Ronin::Etcd.get_key('config', 'common'))
+      @specific = JSON.parse(Ronin::Etcd.get_key('config', @hostname))
+      return @common.merge(@specific)
+    end
+    module_function :get_config
+
+    def get_run_list
+      @hostname = Socket.gethostname
+      @common   = JSON.parse(Ronin::Etcd.get_key('run_list', 'common'))['artifacts']
+      @specific = JSON.parse(Ronin::Etcd.get_key('run_list', @hostname))['artifacts']
+      return (@common+@specific).uniq
     end
     module_function :get_run_list
+
   end
 end

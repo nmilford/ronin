@@ -28,6 +28,7 @@ module Ronin
     end
 
     config_strict_mode         true
+    default :config_from_etcd, false
     default :lock_file,        '/var/tmp/ronin.lock'
     default :log_path,         '/var/log/ronin'
     default :log_level,        :info
@@ -39,7 +40,11 @@ module Ronin
     default :etcd_host,        '127.0.0.1'
     default :etcd_port,        4001
 
+    if Ronin::Config['config_from_etcd'] == true
+      Ronin::Etcd.get_config.each do |k, v|
+        Ronin::Config["#{k}"] = v
+      end
+    end
+
   end
 end
-
-
