@@ -23,24 +23,28 @@ module Ronin
 
     def initialize
       @run_list = {}
-      if Ronin::Config[:run_list_type] == :yaml
-         @artifacts_raw = YAML.load_file(Ronin::Config['run_list_file'])['artifacts']
-      elsif Ronin::Config[:run_list_type] == :etcd
-         @artifacts_raw = Ronin::Etcd.get_run_list
+
+      if Ronin::Config[:run_list_type] == 'etcd'
+        @artifacts_raw = Ronin::Etcd.get_run_list
+      else
+        @artifacts_raw = YAML.load_file(Ronin::Config['run_list_file'])['artifacts']
       end
 
-      @artifacts_raw.each do |a|
-        if a.include?(";")
-          @repo   = a.split(";")[0].sub(/(\/)+$/,'')
-          @branch = a.split(";")[1]
-        else
-          @repo   = a
-          @branch = 'master'
+      unless @artifacts_raw.nil?
+
+        @artifacts_raw.each do |a|
+          if a.include?(";")
+            @repo   = a.split(";")[0].sub(/(\/)+$/,'')
+            @branch = a.split(";")[1]
+          else
+            @repo   = a
+            @branch = 'master'
+          end
+
+          @name = @repo.split("/").last
+
+          @run_list[@name] = { :name => @name, :repo => @repo, :branch => @branch }
         end
-
-        @name = @repo.split("/").last
-
-        @run_list[@name] = { :name => @name, :repo => @repo, :branch => @branch }
       end
 
       @run_list

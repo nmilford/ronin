@@ -18,10 +18,12 @@ require 'ronin/config'
 require 'ronin/log'
 
 module Ronin
-  module Puppet
+  class Puppet
 
-    @run_list = "#{Ronin::Config[:artifact_path]}/ronin.pp"
-    @modules = Ronin::RunList.new.artifacts
+    def initialize
+      @run_list = "#{Ronin::Config[:artifact_path]}/ronin.pp"
+      @modules = Ronin::RunList.new.artifacts
+    end
 
     def create_run_list
       Ronin::Log.info("Building Puppet run list at #{@run_list}.")
@@ -32,7 +34,6 @@ module Ronin
         end
       end
     end
-    module_function :create_run_list
 
     def run
       self.create_run_list
@@ -41,12 +42,11 @@ module Ronin
       @cmd.run_command
       self.clean_up
     end
-    module_function :run
 
     def clean_up
       Ronin::Log.info("Cleaning up Puppet run list at #{@run_list}.")
       File.delete(@run_list)
     end
-    module_function :clean_up
+
   end
 end

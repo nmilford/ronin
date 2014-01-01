@@ -1,22 +1,37 @@
 # Sample config file to be placed in /etc/ronin/ronin.rb
 
+# etcd connection parameters.
+etcd_host         '127.0.0.1'
+etcd_port         4001
+etcd_read_timeout 5
+etcd_conn_timeout 5
+etcd_use_ssl      false
+etcd_ssl_ca_cert  ''
+etcd_ssl_cert     ''
+etcd_ssl_key      ''
+
 # If set to true, everything below (except etcd_*) will be overridden by
 # values gotten from:
-#   http://etcd_host:etcd_port/v2/keys/ronin/config/common
-# then from:
-#   http://etcd_host:etcd_port/v2/keys/ronin/config/$HOSTNAME
+#   http://etcd_host:etcd_port/v2/keys/ronin/config/#{etcd_keys.each}
+# where $x follows the precedence order
 # then from defaults.
 config_from_etcd true
 
-# etcd connection parameters.
-etcd_host '127.0.0.1'
-etcd_port 4001
+# These are the keys we hit in etcd, in order of precedence.  Each JSON that is
+# returned merged with the previous and if there are conflict the last key's
+# value wins.
+#
+# This is entirely composable and you can add and remove your own paths in etcd
+# that look like /v2/keys/ronin/#{type}/#{etcd_keys.each}
+#
+# 'node' will be substituted for node's FQDN.
+etcd_keys [ 'common', 'node' ]
 
 # Where ronin.log, ronin-puppet.log and/or ronin-chef.log reside.
 log_path '/var/log/ronin'
 
-# What interpretor to use to configure your system. Can be :chef or :puppet
-interpreter :chef
+# What interpretor to use to configure your system. Can be 'chef' or 'puppet'
+interpreter 'chef'
 
 # Where Chef or Puppet artifacts are placed. (Artifacts are Chef Cookbooks or
 # Puppet Modules).
@@ -29,21 +44,19 @@ update_on_change true
 # run the interpretor and enforce convergence.
 # daily_override
 
-# We can source our run list from a local :yaml file or an :etcd cluster. If
-# using :etcd, It will source them from:
-#    http://etcd_host:etcd_port/v2/keys/ronin/run_list/common
-# then from:
-#    http://etcd_host:etcd_port/v2/keys/ronin/run_list/$HOSTNAME
-run_list_type :yaml
+# We can source our run list from a local 'yaml' file or an 'etcd' cluster. If
+# using 'etcd', It will source them from:
+#    http://etcd_host:etcd_port/v2/keys/ronin/run_list/#{etcd_keys.each}
+run_list_type 'yaml'
 
-# If using :yaml, then this is the source file.
+# If using 'yaml', then this is the source file.
 run_list_file '/etc/ronin/artifacts.yaml'
 
 # If using etcd, you can format the run list thus:
 # {
 #   "log_path": "/var/log/ronin",
-#   "interpreter": ":chef",
+#   "interpreter": "chef",
 #   "artifact_path": "/var/lib/ronin/artifacts",
 #   "update_on_change": "true",
-#   "run_list_type": ":etcd"
+#   "run_list_type": "etcd"
 # }'

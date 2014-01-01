@@ -14,6 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 require 'mixlib/config'
+require 'ronin/etcd'
 
 module Ronin
   class Config
@@ -27,24 +28,25 @@ module Ronin
       puts "No configuration file at #{config_file}, using defaults."
     end
 
-    config_strict_mode         true
-    default :config_from_etcd, false
-    default :lock_file,        '/var/tmp/ronin.lock'
-    default :log_path,         '/var/log/ronin'
-    default :log_level,        :info
-    default :update_on_change, true
-    default :interpreter,      :puppet
-    default :artifact_path,    '/var/lib/ronin/artifacts'
-    default :run_list_type,    :yaml
-    default :run_list_file,    '/etc/ronin/artifacts.yaml'
-    default :etcd_host,        '127.0.0.1'
-    default :etcd_port,        4001
-
-    if Ronin::Config['config_from_etcd'] == true
-      Ronin::Etcd.get_config.each do |k, v|
-        Ronin::Config["#{k}"] = v
-      end
-    end
+    config_strict_mode          true
+    default :config_from_etcd,  false
+    default :lock_file,         '/var/tmp/ronin.lock'
+    default :log_path,          '/var/log/ronin'
+    default :log_level,         :info
+    default :update_on_change,  true
+    default :interpreter,       'chef'
+    default :artifact_path,     '/var/lib/ronin/artifacts'
+    default :run_list_type,     'yaml'
+    default :run_list_file,     '/etc/ronin/artifacts.yaml'
+    default :etcd_host,         '127.0.0.1'
+    default :etcd_port,         4001
+    default :etcd_conn_timeout, 5
+    default :etcd_read_timeout, 5
+    default :etcd_use_ssl,      false
+    default :etcd_ssl_ca_cert,  ''
+    default :etcd_ssl_cert,     ''
+    default :etcd_ssl_key,      ''
+    default :etcd_keys,          [ 'common', 'env', 'node' ]
 
   end
 end

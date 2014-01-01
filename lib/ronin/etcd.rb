@@ -42,8 +42,24 @@ module Ronin
     def get_key(type, key)
       # Will add error handling... one day.
       @path = "/v2/keys/ronin/#{type}/#{key}"
-      @http = Net::HTTP.new(Ronin::Config['etcd_host'], Ronin::Config['etcd_port'])
-      @http.use_ssl = false
+      @http = Net::HTTP.new(Ronin::Config[:etcd_host], Ronin::Config[:etcd_port])
+      @http.read_timeout = Ronin::Config[:etcd_read_timeout]
+      @http.open_timeout = Ronin::Config[:etcd_conn_timeout]
+
+      if Ronin::Config[:etcd_use_ssl]
+        @http.use_ssl = true
+        unless Ronin::Config[:etcd_ssl_cert] = ''
+          @http.verify_mode = OpenSSL::SSL::VERIFY_PEER
+          store = OpenSSL::X509::Store.new
+          store.add_cert(OpenSSL::X509::Certificate.new(File.read(Ronin::Config[:etcd_ssl_ca_cert])))
+          @http.cert_store = store
+          @http.key = OpenSSL::PKey::RSA.new(File.read(Ronin::Config[:etcd_ssl_cert]))
+          @http.cert = OpenSSL::X509::Certificate.new(File.read(Ronin::Config[:etcd_ssl_key]))
+        end
+      else
+        @http.use_ssl = false
+      end
+
       @request = Net::HTTP::Get.new(@path)
       @result = @http.request(@request)
       return JSON.parse(@result.body)['node']['value']
@@ -53,16 +69,16 @@ module Ronin
     def get_config
       @hostname = Socket.gethostname
       @common   = JSON.parse(Ronin::Etcd.get_key('config', 'common'))
-      @specific = JSON.parse(Ronin::Etcd.get_key('config', @hostname))
-      return @common.merge(@specific)
+      #@specific = JSON.parse(Ronin::Etcd.get_key('config', @hostname))
+      #return @common.merge(@specific)
     end
     module_function :get_config
 
     def get_run_list
       @hostname = Socket.gethostname
       @common   = JSON.parse(Ronin::Etcd.get_key('run_list', 'common'))['artifacts']
-      @specific = JSON.parse(Ronin::Etcd.get_key('run_list', @hostname))['artifacts']
-      return (@common+@specific).uniq
+      #@specific = JSON.parse(Ronin::Etcd.get_key('run_list', @hostname))['artifacts']
+      #return (@common+@specific).uniq
     end
     module_function :get_run_list
 

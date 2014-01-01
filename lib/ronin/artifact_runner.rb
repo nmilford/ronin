@@ -28,8 +28,9 @@ module Ronin
     end
 
     def download_and_report_changes
-      Parallel.each(@run_list.items, :in_processes => Ronin::Util.num_cores) do |item|
-         @actual_branch = Ronin::Git.branch(item[:name])
+      @items = @run_list.items
+      Parallel.each(@items, :in_threads => Ronin::Util.num_cores) do |item|
+        @actual_branch = Ronin::Git.branch(item[:name])
 
         if File.exist?("#{Ronin::Config[:artifact_path]}/#{item[:name]}")
           if item[:branch] != 'master'

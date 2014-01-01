@@ -19,17 +19,18 @@ require 'ronin/log'
 require 'json'
 
 module Ronin
-  module Chef
-    @run_list  = "#{Ronin::Config[:artifact_path]}/ronin.json"
-    @solo_conf = "#{Ronin::Config[:artifact_path]}/ronin-chef-solo.rb"
-    @recipes   = Ronin::RunList.new.artifacts
+  class Chef
+
+    def initialize
+      @run_list  = "#{Ronin::Config[:artifact_path]}/ronin.json"
+      @solo_conf = "#{Ronin::Config[:artifact_path]}/ronin-chef-solo.rb"
+      @recipes   = Ronin::RunList.new.artifacts
+    end
 
     def create_run_list
       Ronin::Log.info("Building Chef run list at #{@run_list}.")
-
       @rl = []
       @rl_obj = {}
-
       @recipes.each do |r|
         @rl << "recipe[#{r}]"
         Ronin::Log.info("Adding recipe '#{r}' to run list.")
@@ -41,7 +42,6 @@ module Ronin
         f.write(@rl_obj.to_json)
       end
     end
-    module_function :create_run_list
 
     def run
       self.create_run_list
@@ -51,7 +51,6 @@ module Ronin
       @cmd.run_command
       self.clean_up
     end
-    module_function :run
 
     def create_solo_conf
       @solo_config = "file_cache_path '/var/tmp/ronin/chef-solo'\ncookbook_path '#{Ronin::Config[:artifact_path]}'\n"
@@ -60,7 +59,6 @@ module Ronin
         f.write(@solo_config)
       end
     end
-    module_function :create_solo_conf
 
     def clean_up
       Ronin::Log.info("Cleaning up Chef run list at #{@run_list}.")
@@ -69,6 +67,6 @@ module Ronin
       Ronin::Log.info("Cleaning up Chef-Solo config at #{@solo_conf}.")
       File.delete(@solo_conf)
     end
-    module_function :clean_up
+
   end
 end
