@@ -1,6 +1,8 @@
 ronin
 =====
 
+[![Build Status](https://api.travis-ci.org/nmilford/ronin.png)](https://travis-ci.org/nmilford/ronin)
+
 Ronin is a tool to enable masterless configuration management.
 
 It is built to use [Chef](https://github.com/opscode/chef) or [Puppet](https://github.com/puppetlabs/puppet) as it's configuration interpretor.
