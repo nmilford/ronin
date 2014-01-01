@@ -31,7 +31,7 @@ module Ronin
         Ronin::Log.info("Setting #{k} to #{v}.")
 
         if v.start_with?(':')
-         v = v[1..-1].to_sym
+          v = v[1..-1].to_sym
         end
 
         Ronin::Config["#{k}"] = v

@@ -1,0 +1,13 @@
+Tailor.config do |config|
+  config.formatters "text"
+
+  config.file_set 'bin/*', :bin do |style|
+    style.max_code_lines_in_method 50, level: :error
+    style.max_line_length 200, level: :error
+  end
+
+  config.file_set 'lib/**/*.rb', :lib do |style|
+    style.max_code_lines_in_method 50, level: :error
+    style.max_line_length 200, level: :error
+  end
+end

@@ -17,8 +17,10 @@
 require File.dirname(__FILE__) + '/lib/ronin/version'
 require File.dirname(__FILE__) + '/lib/ronin/util'
 
-task :test do
-  puts 'Tests'
+namespace :test do
+  task :style do
+    sh %{#{Ronin::Util.find_cmd("tailor")}}
+  end
 end
 
 namespace :build do

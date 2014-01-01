@@ -29,24 +29,24 @@ module Ronin
     end
 
     config_strict_mode          true
-    default :config_from_etcd,  false
-    default :lock_file,         '/var/tmp/ronin.lock'
-    default :log_path,          '/var/log/ronin'
-    default :log_level,         :info
-    default :update_on_change,  true
-    default :interpreter,       'chef'
-    default :artifact_path,     '/var/lib/ronin/artifacts'
-    default :run_list_type,     'yaml'
-    default :run_list_file,     '/etc/ronin/artifacts.yaml'
-    default :etcd_host,         '127.0.0.1'
-    default :etcd_port,         4001
+    default :config_from_etcd, false
+    default :lock_file, '/var/tmp/ronin.lock'
+    default :log_path, '/var/log/ronin'
+    default :log_level, :info
+    default :update_on_change, true
+    default :interpreter, 'chef'
+    default :artifact_path, '/var/lib/ronin/artifacts'
+    default :run_list_type, 'yaml'
+    default :run_list_file, '/etc/ronin/artifacts.yaml'
+    default :etcd_host, '127.0.0.1'
+    default :etcd_port, 4001
     default :etcd_conn_timeout, 5
     default :etcd_read_timeout, 5
-    default :etcd_use_ssl,      false
-    default :etcd_ssl_ca_cert,  ''
-    default :etcd_ssl_cert,     ''
-    default :etcd_ssl_key,      ''
-    default :etcd_keys,          [ 'common', 'node' ]
+    default :etcd_use_ssl, false
+    default :etcd_ssl_ca_cert, ''
+    default :etcd_ssl_cert, ''
+    default :etcd_ssl_key, ''
+    default :etcd_keys, ['common', 'node']
 
   end
 end

@@ -31,10 +31,9 @@ module Ronin
       end
 
       unless @artifacts_raw.nil?
-
         @artifacts_raw.each do |a|
           if a.include?(";")
-            @repo   = a.split(";")[0].sub(/(\/)+$/,'')
+            @repo   = a.split(";")[0].sub(/(\/)+$/, '')
             @branch = a.split(";")[1]
           else
             @repo   = a
@@ -52,13 +51,15 @@ module Ronin
 
     def artifacts
       @arts = []
-      @run_list.each { |k,v| @arts << k }
+      @run_list.each { |k, v| @arts << k }
       @arts
     end
 
     def items
       @items = []
-      @run_list.each { |k,v| @items << { :name => v[:name], :repo => v[:repo], :branch => v[:branch] } }
+      @run_list.each do |k, v|
+        @items << { :name => v[:name], :repo => v[:repo], :branch => v[:branch] }
+      end
       @items
     end
 
