@@ -46,7 +46,7 @@ module Ronin
     default :etcd_ssl_ca_cert,  ''
     default :etcd_ssl_cert,     ''
     default :etcd_ssl_key,      ''
-    default :etcd_keys,          [ 'common', 'env', 'node' ]
+    default :etcd_keys,          [ 'common', 'node' ]
 
   end
 end

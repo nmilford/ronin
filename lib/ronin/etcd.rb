@@ -13,7 +13,8 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-require 'mixlib/config'
+require 'ronin/config'
+#require 'ronin/log'
 require 'net/https'
 require 'net/http'
 require 'socket'
@@ -39,6 +40,8 @@ require 'json'
 module Ronin
   module Etcd
 
+    @hostname = Socket.gethostname
+
     def get_key(type, key)
       # Will add error handling... one day.
       @path = "/v2/keys/ronin/#{type}/#{key}"
@@ -61,24 +64,48 @@ module Ronin
       end
 
       @request = Net::HTTP::Get.new(@path)
-      @result = @http.request(@request)
+
+      begin
+        @result = @http.request(@request)
+      rescue Exception => e
+        abort("Connection refused by etcd host #{Ronin::Config[:etcd_host]}:#{Ronin::Config[:etcd_port]}, exiting...")
+      end
+
+      unless @result.kind_of?(Net::HTTPSuccess)
+        if @result.code == 404
+          puts "Key http://#{Ronin::Config[:etcd_host]}:#{Ronin::Config[:etcd_port]}#{@path} not found, returning an empty set."
+          return "{}"
+        else
+          puts "Got status #{@result.code} querying http://#{Ronin::Config[:etcd_host]}:#{Ronin::Config[:etcd_port]}#{@path}, returning an empty set."
+          return "{}"
+        end
+      end
+
       return JSON.parse(@result.body)['node']['value']
     end
     module_function :get_key
 
     def get_config
-      @hostname = Socket.gethostname
-      @common   = JSON.parse(Ronin::Etcd.get_key('config', 'common'))
-      #@specific = JSON.parse(Ronin::Etcd.get_key('config', @hostname))
-      #return @common.merge(@specific)
+      @config = {}
+      Ronin::Config[:etcd_keys].each do |key|
+        key = @hostname if key == 'node'
+        @payload = JSON.parse(Ronin::Etcd.get_key('config', key))
+        @config = @config.merge(@payload)
+      end
+      return @config
     end
     module_function :get_config
 
     def get_run_list
-      @hostname = Socket.gethostname
-      @common   = JSON.parse(Ronin::Etcd.get_key('run_list', 'common'))['artifacts']
-      #@specific = JSON.parse(Ronin::Etcd.get_key('run_list', @hostname))['artifacts']
-      #return (@common+@specific).uniq
+      @run_list = []
+      Ronin::Config[:etcd_keys].each do |key|
+        key = @hostname if key == 'node'
+        puts key
+        puts @payload.inspect
+        @payload = JSON.parse(Ronin::Etcd.get_key('run_list', key))['artifacts']
+        @run_list += @payload unless @payload.nil?
+      end
+      return @run_list.uniq
     end
     module_function :get_run_list
 
