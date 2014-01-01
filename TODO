@@ -3,3 +3,4 @@
 * Support SRV records for etcd.
 * Pass Puppet and Chef output to stdout.
 * Build daily interpretor run override.
+* Cache etcd sourced config locally incase of etcd outtage.
