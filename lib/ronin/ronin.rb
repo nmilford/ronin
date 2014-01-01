@@ -13,10 +13,11 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-$LOAD_PATH << "."
 require 'ronin/artifact_runner'
 require 'ronin/run_list'
 require 'ronin/config'
+require 'ronin/puppet'
+require 'ronin/chef'
 require 'ronin/util'
 require 'ronin/log'
 

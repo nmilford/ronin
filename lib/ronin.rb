@@ -14,13 +14,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 require 'ronin/ronin'
-require 'ronin/config'
-require 'ronin/artifact_runner'
-require 'ronin/run_list'
-require 'ronin/version'
-require 'ronin/puppet'
-require 'ronin/chef'
-require 'ronin/git'
-require 'ronin/log'
-require 'ronin/etcd'
-
+#require 'ronin/config'
+#require 'ronin/artifact_runner'
+#require 'ronin/run_list'
+#require 'ronin/version'
+#require 'ronin/puppet'
+#require 'ronin/chef'
+#require 'ronin/git'
+#require 'ronin/log'
+#require 'ronin/etcd'

@@ -14,28 +14,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 require 'ronin/config'
-#require 'ronin/log'
 require 'net/https'
 require 'net/http'
 require 'socket'
 require 'json'
-
-# Add test data thus.
-
-#curl -L http://127.0.0.1:4001/v2/keys/ronin/config/common -X PUT -d value='{
-# "artifacts": [
-#   "https://github.com/opscode-cookbooks/motd-tail"
-#  ]
-#}'
-
-#curl -L http://127.0.0.1:4001/v2/keys/ronin/config/common -X PUT -d value='{
-#  "log_path": "/var/log/ronin",
-#  "interpreter": ":chef",
-#  "artifact_path": "/var/lib/ronin/artifacts",
-#  "update_on_change": "true",
-#  "run_list_type": ":etcd",
-#  "run_list_file": "/etc/ronin/artifacts.yaml"
-#}'
 
 module Ronin
   module Etcd
@@ -73,10 +55,10 @@ module Ronin
 
       unless @result.kind_of?(Net::HTTPSuccess)
         if @result.code == 404
-          puts "Key http://#{Ronin::Config[:etcd_host]}:#{Ronin::Config[:etcd_port]}#{@path} not found, returning an empty set."
+          Ronin::Log.info("Key http://#{Ronin::Config[:etcd_host]}:#{Ronin::Config[:etcd_port]}#{@path} not found, returning an empty set.")
           return "{}"
         else
-          puts "Got status #{@result.code} querying http://#{Ronin::Config[:etcd_host]}:#{Ronin::Config[:etcd_port]}#{@path}, returning an empty set."
+          Ronin::Log.info("Got status #{@result.code} querying http://#{Ronin::Config[:etcd_host]}:#{Ronin::Config[:etcd_port]}#{@path}, returning an empty set.")
           return "{}"
         end
       end
@@ -100,8 +82,6 @@ module Ronin
       @run_list = []
       Ronin::Config[:etcd_keys].each do |key|
         key = @hostname if key == 'node'
-        puts key
-        puts @payload.inspect
         @payload = JSON.parse(Ronin::Etcd.get_key('run_list', key))['artifacts']
         @run_list += @payload unless @payload.nil?
       end

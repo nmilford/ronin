@@ -11,12 +11,13 @@ Gem::Specification.new do |s|
   s.authors          = ["Nathan Milford"]
   s.email            = 'nathan@milford.io'
   s.homepage         = 'https://github.com/nmilford/ronin'
-  s.add_dependency     "parallel", ">= 0.9.1"
-  s.add_dependency     "yajl-ruby", ">= 1.2.0"
-  s.add_dependency     "mixlib-log", ">= 1.6.0"
-  s.add_dependency     "mixlib-config", ">= 2.1.0"
-  s.add_dependency     "mixlib-shellout", ">= 1.3.0"
-  s.add_development_dependency "rake", ">= 10.1.1"
+  s.add_dependency     "parallel", "~> 0.9.1"
+  s.add_dependency     "yajl-ruby", "~> 1.2.0"
+  s.add_dependency     "mixlib-log", "~> 1.6.0"
+  s.add_dependency     "mixlib-config", "~> 2.1.0"
+  s.add_dependency     "mixlib-shellout", "~> 1.3.0"
+  s.add_development_dependency "rake", "~> 10.1.1"
+  s.add_development_dependency "rspec", "~> 2.14.0"
   s.files            = [ "lib/ronin.rb",
                          "lib/ronin/ronin.rb",
                          "lib/ronin/util.rb",
