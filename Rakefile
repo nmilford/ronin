@@ -15,17 +15,98 @@
 # limitations under the License.
 
 require File.dirname(__FILE__) + '/lib/ronin/version'
+require File.dirname(__FILE__) + '/lib/ronin/config'
 require File.dirname(__FILE__) + '/lib/ronin/util'
+require 'rspec/core/rake_task'
+require 'tailor/rake_task'
+
+config_file_path = '/etc/ronin'
+config_file      = "#{config_file_path}/ronin.rb"
+artifacts_file   = "#{config_file_path}/artifacts.yaml"
+lock_file        = "/var/tmp/ronin.lock"
+
+task :default => "test:all"
+task :test    => "test:all"
 
 namespace :test do
-  task :style do
-    sh %{#{Ronin::Util.find_cmd("tailor")}}
+  Tailor::RakeTask.new(:style) do |t|
+    t.config_file = File.expand_path(".tailor")
+  end
+
+  RSpec::Core::RakeTask.new(:spec)
+
+  task :all => ["test:style", "test:spec"]
+end
+
+task :install do
+  Rake::Task["build:gem"].invoke
+  Rake::Task["setup"].invoke
+  puts "*** Installing Ronin #{Ronin::VERSION}."
+  sh %{#{Ronin::Util.find_cmd("sudo")} #{Ronin::Util.find_cmd("gem")} install #{File.expand_path(".")}/ronin-wrapper-#{Ronin::VERSION}.gem --no-rdoc --no-ri}
+end
+
+task :uninstall do
+  sh %{#{Ronin::Util.find_cmd("sudo")} #{Ronin::Util.find_cmd("gem")} uninstall #{File.expand_path(".")}/ronin-wrapper-#{Ronin::VERSION}.gem}
+end
+
+task :load_config do
+  Ronin::Config.from_file(config_file)
+  puts "*** Loading config from #{config_file}."
+
+  if Ronin::Config[:config_from_etcd] == true
+    puts "*** Config points to etcd, loading from there."
+    Ronin::Etcd.get_config.each do |k, v|
+      v = v[1..-1].to_sym if v.start_with?(':')
+      Ronin::Config["#{k}"] = v
+    end
+  end
+end
+
+task :setup do
+  puts "*** Setting up directories and seeding config files."
+
+  if File.exist?(config_file_path)
+    puts "*** Directory #{config_file_path} already exists."
+  else
+    puts "*** Creating directory #{config_file_path}."
+    sh %{#{Ronin::Util.find_cmd("sudo")} #{Ronin::Util.find_cmd("mkdir")} -p #{config_file_path}}
+  end
+
+  if File.exist?(config_file)
+    puts "*** Configuration file #{config_file} already exists."
+  else
+    puts "*** Seeding sample configuration file in #{config_file}."
+    sh %{#{Ronin::Util.find_cmd("sudo")} #{Ronin::Util.find_cmd("cp")} #{File.expand_path("conf/ronin.rb.sample")} #{config_file}}
+  end
+
+  if File.exist?(artifacts_file)
+    puts "*** Artifacts file #{artifacts_file} already exists."
+  else
+    puts "*** Seeding sample artifacts file in #{artifacts_file}."
+    sh %{#{Ronin::Util.find_cmd("sudo")} #{Ronin::Util.find_cmd("cp")} #{File.expand_path("conf/artifacts.yaml.sample")} #{artifacts_file}}
+  end
+
+  Rake::Task["load_config"]
+
+  if File.exist?(Ronin::Config[:log_path])
+    puts "*** Directory #{Ronin::Config[:log_path]} already exists."
+  else
+    puts "*** Creating directory #{Ronin::Config[:log_path]}."
+    sh %{#{Ronin::Util.find_cmd("sudo")} #{Ronin::Util.find_cmd("mkdir")} -p #{Ronin::Config[:log_path]}}
+  end
+
+  if File.exist?(Ronin::Config[:artifact_path])
+    puts "*** Directory #{Ronin::Config[:artifact_path]} already exists."
+  else
+    puts "*** Creating directory #{Ronin::Config[:artifact_path]}."
+    sh %{#{Ronin::Util.find_cmd("sudo")} #{Ronin::Util.find_cmd("mkdir")} -p #{Ronin::Config[:artifact_path]}}
   end
 end
 
 namespace :build do
   task :gem do
-    sh %{#{Ronin::Util.find_cmd("gem")} build ./ronin-wrapper.gemspec}
+    puts "*** Building a fresh gem at #{File.expand_path(".")}/ronin-wrapper-#{Ronin::VERSION}.gem."
+    sh %{#{Ronin::Util.find_cmd("gem")} build #{File.expand_path(".")}/ronin-wrapper.gemspec}
   end
 
   task :rpm do
@@ -44,4 +125,50 @@ namespace :build do
   task :deb do
     puts 'not implemented'
   end
+end
+
+namespace :bundle do
+  task :check do
+    sh %{#{Ronin::Util.find_cmd("bundle")} check}
+  end
+
+  task :install do
+    sh %{#{Ronin::Util.find_cmd("sudo")} #{Ronin::Util.find_cmd("bundle")} install}
+  end
+end
+
+namespace :clean do
+  task :artifacts do
+    Rake::Task["load_config"]
+    puts "*** Cleaning up artifacts directory at #{Ronin::Config[:artifact_path]}."
+    sh %{#{Ronin::Util.find_cmd("sudo")} #{Ronin::Util.find_cmd("rm")} -rf #{Ronin::Config[:artifact_path]}}
+  end
+
+  task :lock do
+    puts "*** Cleaning up lock file at #{lock_file}."
+    sh %{#{Ronin::Util.find_cmd("sudo")} #{Ronin::Util.find_cmd("rm")} -f #{lock_file}}
+  end
+
+  task :gems do
+    puts "*** Cleaning up gem files at #{File.expand_path(".")}."
+    sh %{#{Ronin::Util.find_cmd("sudo")} #{Ronin::Util.find_cmd("rm")} -f #{File.expand_path(".")}/*.gem}
+  end
+
+  task :config do
+    if File.exist?(config_file)
+      puts "*** Removing configuration file #{config_file}."
+      sh %{#{Ronin::Util.find_cmd("sudo")} #{Ronin::Util.find_cmd("rm")} -f #{config_file}}
+    else
+      puts "*** No configuration file found at #{config_file}."
+    end
+
+    if File.exist?(artifacts_file)
+      puts "*** Removing artifacts file #{artifacts_file}."
+      sh %{#{Ronin::Util.find_cmd("sudo")} #{Ronin::Util.find_cmd("rm")} -f #{artifacts_file}}
+    else
+      puts "*** No artifacts file found at #{artifacts_file}."
+    end
+  end
+
+  task :all => ["clean:lock", "clean:artifacts"]
 end

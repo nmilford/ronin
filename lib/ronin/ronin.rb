@@ -46,13 +46,13 @@ module Ronin
       $GIT_BIN = Ronin::Util.find_cmd("git")
     end
 
-    if Ronin::Util.find_cmd("puppet").nil? and Ronin::Config[:interpreter] == :puppet
+    if Ronin::Util.find_cmd("puppet").nil? and Ronin::Config[:interpreter] == 'puppet'
       abort("You need to have Puppet installed to perform this command with Puppet set as the interpreter.")
     else
       $PUPPET_BIN = Ronin::Util.find_cmd("puppet")
     end
 
-    if Ronin::Util.find_cmd("chef-solo").nil? and Ronin::Config[:interpreter] == :puppet
+    if Ronin::Util.find_cmd("chef-solo").nil? and Ronin::Config[:interpreter] == 'chef'
       abort("You need to have Chef-Solo installed to perform this command with Chef set as the interpreter.")
     else
       $CHEFSOLO_BIN = Ronin::Util.find_cmd("chef-solo")

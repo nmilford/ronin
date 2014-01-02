@@ -28,7 +28,7 @@ module Ronin
       puts "No configuration file at #{config_file}, using defaults."
     end
 
-    config_strict_mode          true
+    config_strict_mode true
     default :config_from_etcd, false
     default :lock_file, '/var/tmp/ronin.lock'
     default :log_path, '/var/log/ronin'
