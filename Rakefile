@@ -30,6 +30,12 @@ task :default => "test:all"
 task :test    => "test:all"
 
 namespace :test do
+
+  task :travis_config do
+    puts "*** Validating #{File.expand_path('.')}/.travis.yml."
+    sh %{#{Ronin::Util.find_cmd("travis-lint")} #{File.expand_path('.')}/.travis.yml}
+  end
+
   Tailor::RakeTask.new(:style) do |t|
     t.config_file = File.expand_path(".tailor")
   end
@@ -42,7 +48,7 @@ namespace :test do
     Rake::Task["spec_server:down"].execute
   end
 
-  task :all => ["test:style", "test:spec"]
+  task :all => ["test:travis_config", "test:style", "test:spec"]
 
 end
 
