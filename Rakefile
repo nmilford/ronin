@@ -24,6 +24,7 @@ config_file_path = '/etc/ronin'
 config_file      = "#{config_file_path}/ronin.rb"
 artifacts_file   = "#{config_file_path}/artifacts.yaml"
 lock_file        = "/var/tmp/ronin.lock"
+spec_server_port = 4422
 
 task :default => "test:all"
 task :test    => "test:all"
@@ -38,7 +39,6 @@ namespace :test do
   task :spec do
     Rake::Task["spec_server:up"].execute
     Rake::Task["test:run_spec"].execute
-    sh %[sleep 5 ; curl -L http://127.0.0.1:4001/v2/keys/ronin/config/common ]
     Rake::Task["spec_server:down"].execute
   end
 
@@ -49,7 +49,7 @@ end
 namespace :spec_server do
   task :up do
     puts "*** Starting fake etcd server."
-    sh %{cd spec ; #{Ronin::Util.find_cmd("rackup")} config.ru -o 127.0.0.1 -p 4001 -D -P rack.pid}
+    sh %{cd spec ; #{Ronin::Util.find_cmd("rackup")} config.ru -o 127.0.0.1 -p #{spec_server_port} -D -P rack.pid}
   end
 
   task :down do
