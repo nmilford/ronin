@@ -33,9 +33,29 @@ namespace :test do
     t.config_file = File.expand_path(".tailor")
   end
 
-  RSpec::Core::RakeTask.new(:spec)
+  RSpec::Core::RakeTask.new(:run_spec)
+
+  task :spec do
+    Rake::Task["spec_server:up"].execute
+    Rake::Task["test:run_spec"].execute
+    sh %[sleep 5 ; curl -L http://127.0.0.1:4001/v2/keys/ronin/config/common ]
+    Rake::Task["spec_server:down"].execute
+  end
 
   task :all => ["test:style", "test:spec"]
+
+end
+
+namespace :spec_server do
+  task :up do
+    puts "*** Starting fake etcd server."
+    sh %{cd spec ; #{Ronin::Util.find_cmd("rackup")} config.ru -o 127.0.0.1 -p 4001 -D -P rack.pid}
+  end
+
+  task :down do
+    puts "*** Starting fake etcd server."
+    sh %{cd spec ; kill -KILL `cat rack.pid`; rm rack.pid}
+  end
 end
 
 task :install do
