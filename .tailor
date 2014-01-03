@@ -10,4 +10,9 @@ Tailor.config do |config|
     style.max_code_lines_in_method 50, level: :error
     style.max_line_length 200, level: :error
   end
+
+  config.file_set 'spec/**/*.rb', :spec do |style|
+    style.max_code_lines_in_method 50, level: :error
+    style.max_line_length 200, level: :error
+  end
 end

@@ -13,7 +13,7 @@ describe Ronin::Etcd do
   end
 
   it ".get_config" do
-    Ronin::Etcd.get_config.should == {"log_path"=>"node_config"}
+    Ronin::Etcd.get_config.should == { "log_path"=>"node_config" }
   end
 
   it ".get_run_list" do
