@@ -21,6 +21,8 @@ Gem::Specification.new do |s|
   s.add_development_dependency "tailor", "~> 1.3.0"
   s.add_development_dependency "sinatra", "~> 1.4.4"
   s.add_development_dependency "rspec-core", "~> 2.14.7"
+  s.add_development_dependency "rspec-mocks", "~> 2.14.4"
+  s.add_development_dependency "rspec-expectations","~> 2.14.4"
   s.files            = [ "lib/ronin.rb",
                          "lib/ronin/ronin.rb",
                          "lib/ronin/util.rb",
