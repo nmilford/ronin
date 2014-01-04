@@ -60,8 +60,16 @@ namespace :spec_server do
 
   desc "Starts up the fake etcd server for testing."
   task :up do
-    puts "*** Starting fake etcd server."
-    sh %{cd spec ; #{Ronin::Util.find_cmd("rackup")} config.ru -o 127.0.0.1 -p #{spec_server_port} -D -P rack.pid}
+    if `netstat -tln | grep #{spec_server_port} ; echo $?`.chomp.to_i == 0 and File.exists?('spec/rack.pid')
+      puts "*** Fake etcd server already running."
+    elsif `netstat -tln | grep #{spec_server_port} ; echo $?`.chomp.to_i == 0 and ! File.exists?('spec/rack.pid')
+      puts "*** Fake etcd not running, but port is in use."
+    elsif `netstat -tln | grep #{spec_server_port} ; echo $?`.chomp.to_i != 0 and File.exists?('spec/rack.pid')
+      puts "*** Fake etcd server not running, but pid file exists."
+    else
+      puts "*** Starting fake etcd server."
+     sh %{cd spec ; #{Ronin::Util.find_cmd("rackup")} config.ru -o 127.0.0.1 -p #{spec_server_port} -D -P rack.pid}
+    end
   end
 
   desc "Stops the fake etcd server for testing."

@@ -6,6 +6,8 @@ describe Ronin::Etcd do
   before do
     Ronin::Config[:etcd_host] = '127.0.0.1'
     Ronin::Config[:etcd_port] = 4422
+    Ronin::Config[:log_path]  = '/var/tmp/ronin-rspec/'
+    Dir.mkdir(Ronin::Config[:log_path])
   end
 
   it ".get_key" do
@@ -18,5 +20,9 @@ describe Ronin::Etcd do
 
   it ".get_run_list" do
     Ronin::Etcd.get_run_list.should == ["common_artifact", "node_artifact"]
+  end
+
+  after do
+    FileUtils.rm_rf(Ronin::Config[:log_path]) if Dir.exists?(Ronin::Config[:log_path])
   end
 end
