@@ -3,7 +3,6 @@ require 'ronin/artifact_runner'
 
 describe Ronin::ArtifactRunner do
   before do
-    Ronin::Config[:log_path]      = '/var/tmp/ronin-rspec'
     Ronin::Config[:artifact_path] = '/var/tmp/ronin-rspec'
     Ronin::Config[:run_list_type] = 'yaml'
     Ronin::Config[:run_list_file] = "#{File.expand_path('.')}/conf/artifacts.yaml.sample"

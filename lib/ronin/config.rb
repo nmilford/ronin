@@ -31,7 +31,8 @@ module Ronin
     config_strict_mode true
     default :config_from_etcd, false
     default :lock_file, '/var/tmp/ronin.lock'
-    default :log_path, '/var/tmp/ronin-rspec'
+    default :log_path, 'STDOUT'
+    default :interpreter_log_path, '/var/log/ronin'
     default :log_level, :info
     default :update_on_change, true
     default :interpreter, 'chef'

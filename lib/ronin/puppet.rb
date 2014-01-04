@@ -37,7 +37,7 @@ module Ronin
 
     def run
       self.create_run_list
-      Ronin::Log.info("Running Puppet, logging to #{Ronin::Config[:log_path]}/ronin-puppet.log.")
+      Ronin::Log.info("Running Puppet, logging to #{Ronin::Config[:interpreter_log_path]}/ronin-puppet.log.")
       @cmd = Mixlib::ShellOut.new("#{Ronin::Util.find_cmd("puppet")} apply --ordering manifest --logdest #{Ronin::Config[:log_path]}/ronin-puppet.log --modulepath #{Ronin::Config[:artifact_path]} #{@run_list}")
       @cmd.run_command
       self.clean_up

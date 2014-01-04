@@ -27,8 +27,11 @@ config_from_etcd true
 # 'node' will be substituted for node's FQDN.
 etcd_keys [ 'common', 'node' ]
 
-# Where ronin.log, ronin-puppet.log and/or ronin-chef.log reside.
+# Where ronin.log resides.  Can be a path or can be 'STDOUT' to log to console.
 log_path '/var/log/ronin'
+
+# Where ronin-puppet.log and/or ronin-chef.log reside.
+interpreter_log_path '/var/log/ronin'
 
 # What interpretor to use to configure your system. Can be 'chef' or 'puppet'
 interpreter 'chef'

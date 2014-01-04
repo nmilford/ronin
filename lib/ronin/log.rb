@@ -20,9 +20,13 @@ module Ronin
   class Log
     extend Mixlib::Log
 
-    logfile = "#{Ronin::Config[:log_path]}/ronin.log"
-
-    init(logfile)
     self.level = Ronin::Config[:log_level]
+
+    if Ronin::Config[:log_path] == 'STDOUT'
+      init(STDOUT)
+    else
+      init("#{Ronin::Config[:log_path]}/ronin.log")
+    end
+
   end
 end

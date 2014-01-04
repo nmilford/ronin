@@ -4,7 +4,6 @@ require 'ronin/git'
 describe Ronin::Git do
 
   before do
-    Ronin::Config[:log_path]      = '/var/tmp/ronin-rspec'
     Ronin::Config[:artifact_path] = '/var/tmp/ronin-rspec'
 
     Dir.mkdir(Ronin::Config[:artifact_path]) if ! Dir.exists?(Ronin::Config[:artifact_path])
