@@ -15,11 +15,12 @@
 # limitations under the License.
 require "mixlib/shellout"
 require 'ronin/config'
+require 'ronin/util'
 
 module Ronin
   module Git
     def branch(artifact)
-      @cmd = Mixlib::ShellOut.new("#{$GIT_BIN} --git-dir=#{Ronin::Config[:artifact_path]}/#{artifact}/.git --work-tree=#{Ronin::Config[:artifact_path]}/#{artifact}/ branch")
+      @cmd = Mixlib::ShellOut.new("#{Ronin::Util.find_cmd("git")} --git-dir=#{Ronin::Config[:artifact_path]}/#{artifact}/.git --work-tree=#{Ronin::Config[:artifact_path]}/#{artifact}/ branch")
       @cmd.run_command
       @branch = @cmd.stdout.chomp.split(' ')[1]
       @branch
@@ -27,7 +28,7 @@ module Ronin
     module_function :branch
 
     def pull_and_report_updated(artifact)
-      @cmd = Mixlib::ShellOut.new("git --git-dir=#{Ronin::Config[:artifact_path]}/#{artifact}/.git --work-tree=#{Ronin::Config[:artifact_path]}/#{artifact}/ pull")
+      @cmd = Mixlib::ShellOut.new("#{Ronin::Util.find_cmd("git")} --git-dir=#{Ronin::Config[:artifact_path]}/#{artifact}/.git --work-tree=#{Ronin::Config[:artifact_path]}/#{artifact}/ pull")
       @cmd.run_command
       @updated = @cmd.stdout.include?("Updating")
       @updated ? true : false
@@ -35,7 +36,7 @@ module Ronin
     module_function :pull_and_report_updated
 
     def clone(artifact_data)
-      @cmd = Mixlib::ShellOut.new("git clone #{artifact_data[:repo]} #{Ronin::Config[:artifact_path]}/#{artifact_data[:name]}/ -b #{artifact_data[:branch]}")
+      @cmd = Mixlib::ShellOut.new("#{Ronin::Util.find_cmd("git")}  clone #{artifact_data[:repo]} #{Ronin::Config[:artifact_path]}/#{artifact_data[:name]}/ -b #{artifact_data[:branch]}")
       @cmd.run_command
       @cmd.stdout
     end
