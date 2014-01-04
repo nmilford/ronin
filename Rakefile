@@ -24,6 +24,7 @@ config_file_path = '/etc/ronin'
 config_file      = "#{config_file_path}/ronin.rb"
 artifacts_file   = "#{config_file_path}/artifacts.yaml"
 lock_file        = "/var/tmp/ronin.lock"
+spec_log_dir     = "/var/tmp/ronin-rspec/"
 spec_server_port = 4422
 
 task :default => "test:all"
@@ -47,7 +48,9 @@ namespace :test do
   desc "Fires up a fake etcd server and runs RSpec"
   task :spec do
     Rake::Task["spec_server:up"].execute
+    Dir.mkdir(spec_log_dir) if ! Dir.exists?(spec_log_dir)
     Rake::Task["test:run_spec"].execute
+    FileUtils.rm_rf(spec_log_dir) if Dir.exists?(spec_log_dir)
     Rake::Task["spec_server:down"].execute
   end
 
