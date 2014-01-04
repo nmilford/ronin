@@ -14,6 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 require 'ronin/config'
+require 'ronin/cache'
 require 'net/https'
 require 'net/http'
 require 'socket'
@@ -50,7 +51,11 @@ module Ronin
       begin
         @result = @http.request(@request)
       rescue Exception => e
-        abort("Connection refused by etcd host #{Ronin::Config[:etcd_host]}:#{Ronin::Config[:etcd_port]}, exiting...")
+        if Ronin::Config[:cache_etcd_data]
+          return :down
+        else
+          abort("Connection refused by etcd host #{Ronin::Config[:etcd_host]}:#{Ronin::Config[:etcd_port]}, exiting...")
+        end
       end
 
       unless @result.kind_of?(Net::HTTPSuccess)
@@ -71,9 +76,23 @@ module Ronin
       @config = {}
       Ronin::Config[:etcd_keys].each do |key|
         key = @hostname if key == 'node'
-        @payload = JSON.parse(Ronin::Etcd.get_key('config', key))
-        @config = @config.merge(@payload)
+
+        @payload = Ronin::Etcd.get_key('config', key)
+
+        if @payload == :down
+          Ronin::Log.warn("Connection refused by etcd host #{Ronin::Config[:etcd_host]}:#{Ronin::Config[:etcd_port]}, loading config from cache (#{Ronin::Config[:cache_path]}/config.json)")
+
+          return Ronin::Cache.load_cached_config
+        else
+          @parsed_payload = JSON.parse(@payload)
+          @config = @config.merge(@parsed_payload)
+        end
       end
+
+      if Ronin::Config[:config_from_etcd] and Ronin::Config[:cache_etcd_data]
+        Ronin::Cache.cache_config(@config)
+      end
+
       return @config
     end
     module_function :get_config
@@ -82,9 +101,22 @@ module Ronin
       @run_list = []
       Ronin::Config[:etcd_keys].each do |key|
         key = @hostname if key == 'node'
-        @payload = JSON.parse(Ronin::Etcd.get_key('run_list', key))['artifacts']
-        @run_list += @payload unless @payload.nil?
+
+        @payload = Ronin::Etcd.get_key('run_list', key)
+
+        if @payload == :down
+          Ronin::Log.warn("Connection refused by etcd host #{Ronin::Config[:etcd_host]}:#{Ronin::Config[:etcd_port]}, loading run_list from cache (#{Ronin::Config[:cache_path]}/run_list.json)")
+          return Ronin::Cache.load_cached_run_list
+        else
+          @parsed_payload = JSON.parse(@payload)['artifacts']
+          @run_list += @parsed_payload unless @parsed_payload.nil?
+        end
+
+        if Ronin::Config[:config_from_etcd] and Ronin::Config[:cache_etcd_data]
+          Ronin::Cache.cache_run_list(@run_list.uniq)
+        end
       end
+
       return @run_list.uniq
     end
     module_function :get_run_list

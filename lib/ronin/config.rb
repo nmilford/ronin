@@ -14,7 +14,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 require 'mixlib/config'
-require 'ronin/etcd'
 
 module Ronin
   class Config
@@ -30,12 +29,14 @@ module Ronin
 
     config_strict_mode true
     default :config_from_etcd, false
+    default :cache_etcd_data, true
     default :lock_file, '/var/tmp/ronin.lock'
     default :log_path, 'STDOUT'
     default :interpreter_log_path, '/var/log/ronin'
     default :log_level, :info
     default :update_on_change, true
     default :interpreter, 'chef'
+    default :cache_path, '/var/lib/ronin/cache'
     default :artifact_path, '/var/lib/ronin/artifacts'
     default :run_list_type, 'yaml'
     default :run_list_file, '/etc/ronin/artifacts.yaml'
