@@ -29,8 +29,10 @@ spec_server_port = 4422
 task :default => "test:all"
 task :test    => "test:all"
 
+
 namespace :test do
 
+  desc "Validates the TravisCI config (.travis.yml)"
   task :travis_config do
     puts "*** Validating #{File.expand_path('.')}/.travis.yml."
     sh %{#{Ronin::Util.find_cmd("travis-lint")} #{File.expand_path('.')}/.travis.yml}
@@ -42,28 +44,34 @@ namespace :test do
 
   RSpec::Core::RakeTask.new(:run_spec)
 
+  desc "Fires up a fake etcd server and runs RSpec"
   task :spec do
     Rake::Task["spec_server:up"].execute
     Rake::Task["test:run_spec"].execute
     Rake::Task["spec_server:down"].execute
   end
 
+  desc "Runs all tests"
   task :all => ["test:travis_config", "test:style", "test:spec"]
 
 end
 
 namespace :spec_server do
+
+  desc "Starts up the fake etcd server for testing."
   task :up do
     puts "*** Starting fake etcd server."
     sh %{cd spec ; #{Ronin::Util.find_cmd("rackup")} config.ru -o 127.0.0.1 -p #{spec_server_port} -D -P rack.pid}
   end
 
+  desc "Stops the fake etcd server for testing."
   task :down do
     puts "*** Starting fake etcd server."
     sh %{cd spec ; kill -KILL `cat rack.pid`; rm rack.pid}
   end
 end
 
+desc "Installs Ronin by building a fresh RubyGem and setting up config files and directories"
 task :install do
   Rake::Task["build:gem"].invoke
   Rake::Task["setup"].invoke
@@ -71,6 +79,7 @@ task :install do
   sh %{#{Ronin::Util.find_cmd("sudo")} #{Ronin::Util.find_cmd("gem")} install #{File.expand_path(".")}/ronin-wrapper-#{Ronin::VERSION}.gem --no-rdoc --no-ri}
 end
 
+desc "Uninstalls the Ronin RubyGem"
 task :uninstall do
   sh %{#{Ronin::Util.find_cmd("sudo")} #{Ronin::Util.find_cmd("gem")} uninstall #{File.expand_path(".")}/ronin-wrapper-#{Ronin::VERSION}.gem}
 end
@@ -88,6 +97,8 @@ task :load_config do
   end
 end
 
+
+desc "Sets up a config and directories for Ronin"
 task :setup do
   puts "*** Setting up directories and seeding config files."
 
@@ -130,11 +141,14 @@ task :setup do
 end
 
 namespace :build do
+
+  desc "Builds a Ronin RubyGem"
   task :gem do
     puts "*** Building a fresh gem at #{File.expand_path(".")}/ronin-wrapper-#{Ronin::VERSION}.gem."
     sh %{#{Ronin::Util.find_cmd("gem")} build #{File.expand_path(".")}/ronin-wrapper.gemspec}
   end
 
+  desc "Builds a Ronin RPM package"
   task :rpm do
     if Ronin::Util.find_cmd("rpmbuild") and Ronin::Util.find_cmd("rpmdev-setuptree")
       unless File.exist?("#{File.expand_path('~')}/rpmbuild")
@@ -148,38 +162,48 @@ namespace :build do
     end
   end
 
+  desc "Builds a Ronin deb package"
   task :deb do
     puts 'not implemented'
   end
 end
 
+
 namespace :bundle do
+
+  desc "Checks if dependencies are installed"
   task :check do
     sh %{#{Ronin::Util.find_cmd("bundle")} check}
   end
 
+  desc "Installs dependencies"
   task :install do
     sh %{#{Ronin::Util.find_cmd("sudo")} #{Ronin::Util.find_cmd("bundle")} install}
   end
 end
 
 namespace :clean do
+
+  desc "Wipes the artifact directory defined in your config"
   task :artifacts do
     Rake::Task["load_config"]
     puts "*** Cleaning up artifacts directory at #{Ronin::Config[:artifact_path]}."
     sh %{#{Ronin::Util.find_cmd("sudo")} #{Ronin::Util.find_cmd("rm")} -rf #{Ronin::Config[:artifact_path]}}
   end
 
+  desc "Wipes the lock file"
   task :lock do
     puts "*** Cleaning up lock file at #{lock_file}."
     sh %{#{Ronin::Util.find_cmd("sudo")} #{Ronin::Util.find_cmd("rm")} -f #{lock_file}}
   end
 
+  desc "Wipes *.gem files in the git root"
   task :gems do
     puts "*** Cleaning up gem files at #{File.expand_path(".")}."
     sh %{#{Ronin::Util.find_cmd("sudo")} #{Ronin::Util.find_cmd("rm")} -f #{File.expand_path(".")}/*.gem}
   end
 
+  desc "Wipes the config and artifacts files"
   task :config do
     if File.exist?(config_file)
       puts "*** Removing configuration file #{config_file}."
@@ -196,5 +220,6 @@ namespace :clean do
     end
   end
 
+  desc "Wipes the lock and artifacts directory"
   task :all => ["clean:lock", "clean:artifacts"]
 end
