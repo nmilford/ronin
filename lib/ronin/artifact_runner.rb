@@ -14,6 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.require 'ronin/run_list'
 require 'ronin/config'
+require 'ronin/run_list'
 require 'ronin/util'
 require 'ronin/git'
 require 'ronin/log'
