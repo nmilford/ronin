@@ -5,7 +5,7 @@ Gem::Specification.new do |s|
   s.name             = 'ronin-wrapper'
   s.version          = Ronin::VERSION
   s.platform         = Gem::Platform::RUBY
-  s.date             = '2014-01-02'
+  s.date             = '2014-01-05'
   s.summary          = "A framework for masterless configuration management."
   s.description      = "A wrapper to enable masterless configuration management, using Chef and/or Puppet."
   s.authors          = ["Nathan Milford"]
@@ -16,6 +16,7 @@ Gem::Specification.new do |s|
   s.add_dependency     "mixlib-log", "~> 1.6.0"
   s.add_dependency     "mixlib-config", "~> 2.1.0"
   s.add_dependency     "mixlib-shellout", "~> 1.3.0"
+  s.add_development_dependency 'mime-types', '1.25' if RUBY_VERSION < "1.9"
   s.add_development_dependency "rack", "~> 1.5.2"
   s.add_development_dependency "rake", "~> 10.1.1"
   s.add_development_dependency "tailor", "~> 1.3.0"
@@ -29,6 +30,7 @@ Gem::Specification.new do |s|
                          "lib/ronin/ronin.rb",
                          "lib/ronin/util.rb",
                          "lib/ronin/config.rb",
+                         "lib/ronin/cache.rb",
                          "lib/ronin/puppet.rb",
                          "lib/ronin/chef.rb",
                          "lib/ronin/git.rb",
