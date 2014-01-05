@@ -2,8 +2,6 @@ language: ruby
 before_install:
   - gem update bundler
   - gem update --system 2.1.11
-  - bundle install
-bundler_args: --without development
 rvm:
   - 2.0.0
   - 1.9.3
