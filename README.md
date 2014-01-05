@@ -1,4 +1,4 @@
-## Ronin [![Build Status](https://api.travis-ci.org/nmilford/ronin.png)](https://travis-ci.org/nmilford/ronin) [![Gem Version](https://badge.fury.io/rb/ronin-wrapper.png)](http://badge.fury.io/rb/ronin-wrapper)
+## Ronin [![Build Status](https://api.travis-ci.org/nmilford/ronin.png)](https://travis-ci.org/nmilford/ronin) [![Coverage Status](https://coveralls.io/repos/nmilford/ronin/badge.png)](https://coveralls.io/r/nmilford/ronin) [![Gem Version](https://badge.fury.io/rb/ronin-wrapper.png)](http://badge.fury.io/rb/ronin-wrapper)
 
 
 Ronin is a tool to enable masterless configuration management.
