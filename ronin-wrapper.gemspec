@@ -20,6 +20,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency "rake", "~> 10.1.1"
   s.add_development_dependency "tailor", "~> 1.3.0"
   s.add_development_dependency "sinatra", "~> 1.4.4"
+  s.add_development_dependency "coveralls", "~> 0.7.0"
   s.add_development_dependency "travis-lint", "~> 1.7.0"
   s.add_development_dependency "rspec-core", "~> 2.14.7"
   s.add_development_dependency "rspec-mocks", "~> 2.14.4"
