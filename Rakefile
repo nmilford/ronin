@@ -77,7 +77,7 @@ namespace :spec_server do
 
   desc "Stops the fake etcd server for testing."
   task :down do
-    puts "*** Starting fake etcd server."
+    puts "*** Stopping fake etcd server."
     sh %{cd spec ; kill -KILL `cat rack.pid`; rm rack.pid}
   end
 end
