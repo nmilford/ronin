@@ -15,5 +15,5 @@
 # limitations under the License.
 
 module Ronin
-  VERSION = '0.0.13'
+  VERSION = '0.1.0'
 end
