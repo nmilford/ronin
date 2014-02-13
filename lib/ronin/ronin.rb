@@ -25,6 +25,9 @@ require 'ronin/log'
 module Ronin
   def run
 
+    # Prepend the Omnibus path if Ronin was installed that way.
+    ENV['PATH'] = '/opt/ronin/embedded/bin:' + ENV['PATH'] if File.directory?('/opt/ronin/embedded/bin/')
+
     if Ronin::Config[:config_from_etcd] == true
       Ronin::Log.info("Pulling configuration items from etcd (#{Ronin::Config[:etcd_host]}:#{Ronin::Config[:etcd_port]}).")
 

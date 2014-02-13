@@ -11,6 +11,7 @@ Gem::Specification.new do |s|
   s.authors          = ["Nathan Milford"]
   s.email            = 'nathan@milford.io'
   s.homepage         = 'https://github.com/nmilford/ronin'
+  s.add_dependency     "json", "~> 1.8.1"
   s.add_dependency     "parallel", "~> 0.9.1"
   s.add_dependency     "yajl-ruby", "~> 1.2.0"
   s.add_dependency     "mixlib-log", "~> 1.6.0"
