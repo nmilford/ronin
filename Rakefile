@@ -159,24 +159,24 @@ namespace :build do
     sh %{#{Ronin::Util.find_cmd("gem")} build #{File.expand_path(".")}/ronin-wrapper.gemspec}
   end
 
-  desc "Builds a Ronin RPM package"
-  task :rpm do
-    if Ronin::Util.find_cmd("rpmbuild") and Ronin::Util.find_cmd("rpmdev-setuptree")
-      unless File.exist?("#{File.expand_path('~')}/rpmbuild")
-        puts "Setting up RPM build tree at ~/rpmbuild."
-        sh %{#{Ronin::Util.find_cmd("rpmdev-setuptree")}}
-      end
-      sh %{#{Ronin::Util.find_cmd("rpmbuild")} -bb ./packaging/rpm/ronin-wrapper.spec}
-    else
-      puts "You must have rpmdevtools installed to build an RPM package."
-      exit 1
-    end
-  end
+#  desc "Builds a Ronin RPM package"
+#  task :rpm do
+#    if Ronin::Util.find_cmd("rpmbuild") and Ronin::Util.find_cmd("rpmdev-setuptree")
+#      unless File.exist?("#{File.expand_path('~')}/rpmbuild")
+#        puts "Setting up RPM build tree at ~/rpmbuild."
+#        sh %{#{Ronin::Util.find_cmd("rpmdev-setuptree")}}
+#      end
+#      sh %{#{Ronin::Util.find_cmd("rpmbuild")} -bb ./packaging/rpm/ronin-wrapper.spec}
+#    else
+#      puts "You must have rpmdevtools installed to build an RPM package."
+#      exit 1
+#    end
+#  end
 
-  desc "Builds a Ronin deb package"
-  task :deb do
-    puts 'not implemented'
-  end
+#  desc "Builds a Ronin deb package"
+#  task :deb do
+#    puts 'not implemented'
+#  end
 end
 
 
