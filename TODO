@@ -1,6 +1,5 @@
-* Add tests.
-* Deb packaging.
+* Complete tests.
 * Support SRV records for etcd.
 * Pass Puppet and Chef output to stdout.
-* Build daily interpretor run override.
-* Cache etcd sourced config locally incase of etcd outtage.
+* Add CLI flag to run interpreter regardless of changes.
+* Add CLI flag to ignore/disable local cache.
